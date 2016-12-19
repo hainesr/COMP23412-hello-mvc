@@ -1,6 +1,7 @@
 package hello;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
 import java.net.MalformedURLException;
@@ -38,6 +39,7 @@ public class GreetingControllerIntegrationTest {
 	public void getGreeting() {
 		ResponseEntity<String> response = template.getForEntity(greeting.toString(), String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getBody(), containsString("Hello, World!"));
 	}
 
 }
