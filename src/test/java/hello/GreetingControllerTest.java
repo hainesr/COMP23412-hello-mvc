@@ -1,5 +1,7 @@
 package hello;
 
+import static org.hamcrest.core.StringContains.containsString;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
@@ -22,7 +24,14 @@ public class GreetingControllerTest {
 
 	@Test
 	public void getGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.TEXT_HTML)).andExpect(status().isOk());
+		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(content().string(containsString("Hello, World!")));
+	}
+
+	@Test
+	public void getGreetingName() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/greeting?name=Rob").accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, Rob!")));
 	}
 
 }
