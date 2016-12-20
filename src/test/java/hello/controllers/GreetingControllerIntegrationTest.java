@@ -28,13 +28,16 @@ public class GreetingControllerIntegrationTest {
 	private int port;
 
 	private URL greeting;
+	private URL greetingName;
 
 	@Autowired
 	private TestRestTemplate template;
 
 	@Before
 	public void setUp() throws MalformedURLException {
-		this.greeting = new URL("http://localhost:" + port + "/greeting");
+		String url = "http://localhost:" + port + "/greeting";
+		this.greeting = new URL(url);
+		this.greetingName = new URL(url + "?name=Rob");
 	}
 
 	@Test
@@ -44,4 +47,10 @@ public class GreetingControllerIntegrationTest {
 		assertThat(response.getBody(), containsString("Hello, World!"));
 	}
 
+	@Test
+	public void getGreetingName() {
+		ResponseEntity<String> response = template.getForEntity(greetingName.toString(), String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getBody(), containsString("Hello, Rob!"));
+	}
 }
