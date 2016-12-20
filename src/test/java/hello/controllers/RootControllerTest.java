@@ -1,4 +1,4 @@
-package hello;
+package hello.controllers;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -12,8 +12,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import hello.configuration.Application;
+
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
 public class RootControllerTest {
 

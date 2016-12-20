@@ -1,4 +1,4 @@
-package hello;
+package hello.controllers;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -14,8 +14,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import hello.configuration.Application;
+
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
 public class GreetingControllerTest {
 
@@ -31,7 +33,7 @@ public class GreetingControllerTest {
 	@Test
 	public void getGreetingName() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting?name=Rob").accept(MediaType.TEXT_HTML))
-				.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, Rob!")));
+		.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, Rob!")));
 	}
 
 }
