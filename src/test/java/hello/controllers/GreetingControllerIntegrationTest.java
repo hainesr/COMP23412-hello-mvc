@@ -35,7 +35,8 @@ public class GreetingControllerIntegrationTest {
 	private URL greeting;
 	private URL greetingName;
 
-	private HttpEntity<String> entity;
+	private HttpEntity<String> htmlEntity;
+	private HttpEntity<String> jsonEntity;
 
 	@Autowired
 	private TestRestTemplate template;
@@ -46,14 +47,18 @@ public class GreetingControllerIntegrationTest {
 		this.greeting = new URL(url);
 		this.greetingName = new URL(url + "?name=Rob");
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
-		entity = new HttpEntity<String>("parameters", headers);
+		HttpHeaders htmlHeaders = new HttpHeaders();
+		htmlHeaders.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
+		htmlEntity = new HttpEntity<String>("parameters", htmlHeaders);
+
+		HttpHeaders jsonHeaders = new HttpHeaders();
+		jsonHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		jsonEntity = new HttpEntity<>("parameters", jsonHeaders);
 	}
 
 	@Test
 	public void getHtmlGreeting() {
-		ResponseEntity<String> response = template.exchange(greeting.toString(), HttpMethod.GET, entity, String.class);
+		ResponseEntity<String> response = template.exchange(greeting.toString(), HttpMethod.GET, htmlEntity, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.TEXT_HTML_VALUE));
 		assertThat(response.getBody(), containsString("Hello, World!"));
@@ -61,15 +66,14 @@ public class GreetingControllerIntegrationTest {
 
 	@Test
 	public void getJsonGreeting() {
-		ResponseEntity<String> response = template.getForEntity(greeting.toString(), String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-		assertThat(response.getHeaders().getContentType(), equalTo(MediaType.APPLICATION_JSON_UTF8));
-		assertThat(response.getBody(), containsString("Hello, World!"));
+		ResponseEntity<String> response = template.exchange(greeting.toString(), HttpMethod.GET, jsonEntity,
+				String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.NOT_ACCEPTABLE));
 	}
 
 	@Test
 	public void getHtmlGreetingName() {
-		ResponseEntity<String> response = template.exchange(greetingName.toString(), HttpMethod.GET, entity,
+		ResponseEntity<String> response = template.exchange(greetingName.toString(), HttpMethod.GET, htmlEntity,
 				String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.TEXT_HTML_VALUE));
@@ -78,9 +82,8 @@ public class GreetingControllerIntegrationTest {
 
 	@Test
 	public void getJsonGreetingName() {
-		ResponseEntity<String> response = template.getForEntity(greetingName.toString(), String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-		assertThat(response.getHeaders().getContentType(), equalTo(MediaType.APPLICATION_JSON_UTF8));
-		assertThat(response.getBody(), containsString("Hello, Rob!"));
+		ResponseEntity<String> response = template.exchange(greetingName.toString(), HttpMethod.GET, jsonEntity,
+				String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.NOT_ACCEPTABLE));
 	}
 }

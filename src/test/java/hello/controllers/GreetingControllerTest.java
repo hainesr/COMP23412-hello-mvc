@@ -33,7 +33,7 @@ public class GreetingControllerTest {
 	@Test
 	public void getJsonGreeting() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, World!")));
+		.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
@@ -45,7 +45,7 @@ public class GreetingControllerTest {
 	@Test
 	public void getJsonGreetingName() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting?name=Rob").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, Rob!")));
+		.andExpect(status().isNotAcceptable());
 	}
 
 }
