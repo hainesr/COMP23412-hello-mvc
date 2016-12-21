@@ -15,6 +15,7 @@ import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -41,16 +42,18 @@ public class GreetingControllerIntegrationTest {
 	}
 
 	@Test
-	public void getGreeting() {
+	public void getJsonGreeting() {
 		ResponseEntity<String> response = template.getForEntity(greeting.toString(), String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getHeaders().getContentType(), equalTo(MediaType.APPLICATION_JSON_UTF8));
 		assertThat(response.getBody(), containsString("Hello, World!"));
 	}
 
 	@Test
-	public void getGreetingName() {
+	public void getJsonGreetingName() {
 		ResponseEntity<String> response = template.getForEntity(greetingName.toString(), String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getHeaders().getContentType(), equalTo(MediaType.APPLICATION_JSON_UTF8));
 		assertThat(response.getBody(), containsString("Hello, Rob!"));
 	}
 }
