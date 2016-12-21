@@ -36,4 +36,11 @@ public class ApiControllerTest {
 		.andExpect(status().isNotAcceptable());
 	}
 
+	@Test
+	public void postGreeting() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/api/greeting").content("{ \"name\": \"Rob\" }")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		.andExpect(content().string(containsString("Hello, Rob!")));
+	}
+
 }
