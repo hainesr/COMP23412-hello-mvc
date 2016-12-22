@@ -34,11 +34,10 @@ public class ApiController {
 	private String getNameFromJson(String json) {
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		JsonNode rootNode;
 		String name;
 
 		try {
-			rootNode = objectMapper.readTree(json);
+			JsonNode rootNode = objectMapper.readTree(json);
 			name = rootNode.path("name").textValue();
 		} catch (IOException e) {
 			name = null;
