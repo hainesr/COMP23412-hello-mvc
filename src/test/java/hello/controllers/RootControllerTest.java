@@ -27,4 +27,10 @@ public class RootControllerTest {
 		mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.TEXT_HTML)).andExpect(status().isOk());
 	}
 
+	@Test
+	public void getJsonRoot() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+	}
+
 }
