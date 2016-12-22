@@ -20,35 +20,28 @@ import models.Greeting;
 @RequestMapping(value = "/api", produces = { MediaType.APPLICATION_JSON_VALUE })
 public class ApiController {
 
-	private static final String DEFAULT_NAME = "World";
-
 	@RequestMapping(value = "/greeting", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<Greeting> get() {
-		Greeting greeting = new Greeting(DEFAULT_NAME);
-		return new ResponseEntity<Greeting>(greeting, HttpStatus.OK);
+		return new ResponseEntity<Greeting>(new Greeting(), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/greeting", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<Greeting> post(@RequestBody String body) {
-		Greeting greeting = new Greeting(getNameFromJson(body, DEFAULT_NAME));
+		Greeting greeting = new Greeting(getNameFromJson(body));
 		return new ResponseEntity<Greeting>(greeting, HttpStatus.OK);
 	}
 
-	private String getNameFromJson(String json, String default_name) {
+	private String getNameFromJson(String json) {
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		JsonNode rootNode;
-		String name = null;
+		String name;
 
 		try {
 			rootNode = objectMapper.readTree(json);
 			name = rootNode.path("name").textValue();
 		} catch (IOException e) {
-			// We can ignore this error, as we set a default below
-		}
-
-		if (name == null) {
-			name = default_name;
+			name = null;
 		}
 
 		return name;

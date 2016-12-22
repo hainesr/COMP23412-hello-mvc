@@ -14,8 +14,7 @@ import models.Greeting;
 public class GreetingController {
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String greeting(@RequestParam(value = "name", required = false, defaultValue = "World") String name,
-			Model model) {
+	public String greeting(@RequestParam(value = "name", required = false) String name, Model model) {
 		model.addAttribute("greeting", new Greeting(name));
 
 		return "greeting";
