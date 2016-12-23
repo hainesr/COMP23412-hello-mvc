@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import models.Greeting;
+import hello.models.Greeting;
 
 @Controller
 @RequestMapping(value = "/greeting", produces = { MediaType.TEXT_HTML_VALUE })
