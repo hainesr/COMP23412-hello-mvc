@@ -2,10 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>uk.ac.man.cs</groupId>
-  <artifactId>eventlite</artifactId>
+  <artifactId>mvc-dev</artifactId>
   <version>0.0.1</version>
-  <name>EventLite</name>
-  
+  <name>MVC-Dev</name>
+
   <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -41,5 +41,5 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>
