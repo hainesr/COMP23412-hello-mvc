@@ -1,24 +1,48 @@
 package hello.models;
 
-public class Greeting {
+import java.io.Serializable;
 
-	private static final String DEFAULT_NAME = "World";
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-	private final String name;
-	private final String template = "Hello, %s!";
+@Entity
+public class Greeting implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue
+	private long id;
+
+	private String template;
 
 	public Greeting() {
-		this(DEFAULT_NAME);
 	}
 
-	public Greeting(String name) {
-		name = (name == null ? DEFAULT_NAME : name);
-
-		this.name = name;
+	public Greeting(String template) {
+		this.template = template;
 	}
 
-	public String getGreeting() {
-		return String.format(template, this.name);
+	public long getId() {
+		return this.id;
+	}
+
+	public String getTemplate() {
+		return this.template;
+	}
+
+	public void setTemplate(String template) {
+		this.template = template;
+	}
+
+	public String getGreeting(String name) {
+		return String.format(this.template, name);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Greeting [id = %d, template = %s]", this.id, this.template);
 	}
 
 }

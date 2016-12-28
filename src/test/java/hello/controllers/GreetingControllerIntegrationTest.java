@@ -24,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import hello.Application;
+import hello.models.Greeting;
+import hello.services.GreetingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -31,6 +33,9 @@ public class GreetingControllerIntegrationTest {
 
 	@LocalServerPort
 	private int port;
+
+	@Autowired
+	GreetingService greetingService;
 
 	private URL greeting;
 	private URL greetingName;
@@ -43,7 +48,9 @@ public class GreetingControllerIntegrationTest {
 
 	@Before
 	public void setUp() throws MalformedURLException {
-		String url = "http://localhost:" + port + "/greeting";
+		greetingService.save(new Greeting("Hello, %s!"));
+
+		String url = "http://localhost:" + port + "/greeting/1";
 		this.greeting = new URL(url);
 		this.greetingName = new URL(url + "?name=Rob");
 
