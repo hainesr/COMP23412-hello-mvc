@@ -3,6 +3,7 @@ package hello.controllers;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class GreetingControllerTest {
 	@Test
 	public void getGreeting() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-		.andExpect(content().string(containsString("Hello, World!")));
+		.andExpect(content().string(containsString("Hello, World!"))).andExpect(view().name("greeting"));
 	}
 
 	@Test
@@ -50,7 +51,8 @@ public class GreetingControllerTest {
 	@Test
 	public void getGreetingName() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1?name=Rob").accept(MediaType.TEXT_HTML))
-		.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, Rob!")));
+				.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, Rob!")))
+				.andExpect(view().name("greeting"));
 	}
 
 	@Test
