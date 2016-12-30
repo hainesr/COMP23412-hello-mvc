@@ -16,8 +16,19 @@ import hello.services.GreetingService;
 @RequestMapping(value = "/greeting", produces = { MediaType.TEXT_HTML_VALUE })
 public class GreetingController {
 
+	private static final String[] NAMES = { "Rob", "Caroline", "Markel" };
+
 	@Autowired
 	private GreetingService greetingService;
+
+	@RequestMapping(method = RequestMethod.GET)
+	public String list(Model model) {
+
+		model.addAttribute("greetings", greetingService.findAll());
+		model.addAttribute("names", NAMES);
+
+		return "greeting/index";
+	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public String greeting(@PathVariable("id") long id,

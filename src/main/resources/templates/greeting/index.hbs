@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Template</th>
+          <th>Examples</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#greetings}}
+          {{> greeting/_detail this.names}}
+        {{/greetings}}
+      </tbody>
+    </table>
+</body>
+</html>
