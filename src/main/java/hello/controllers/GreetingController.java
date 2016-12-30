@@ -26,7 +26,7 @@ public class GreetingController {
 		Greeting greeting = greetingService.findOne(id);
 		model.addAttribute("greeting", greeting.getGreeting(name));
 
-		return "greeting";
+		return "greeting/show";
 	}
 
 }
