@@ -1,18 +1,18 @@
 {{#partial "content"}}
-    <table>
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>Template</th>
-          <th>Examples</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#greetings}}
-          {{> greeting/_detail this.names}}
-        {{/greetings}}
-      </tbody>
-    </table>
+<table>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Template</th>
+      <th>Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#greetings}}
+      {{> greeting/_detail this.names}}
+    {{/greetings}}
+  </tbody>
+</table>
 {{/partial}}
 
 {{> layouts/base title="All greetings"}}
