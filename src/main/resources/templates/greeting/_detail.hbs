@@ -3,7 +3,7 @@
   <td>{{template}}</td>
   <td>
     {{#names}}
-      <a href="/greeting/{{id}}?name={{this}}">{{this}}</a>
+      <a href="/greeting/{{id}}?name={{this}}">{{this}}</a>{{#unless @last}},{{/unless}}
     {{/names}}
   </td>
 </tr>
