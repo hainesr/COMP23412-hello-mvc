@@ -39,7 +39,7 @@ public class GreetingControllerTest {
 	@Test
 	public void getGreeting() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-		.andExpect(content().string(containsString("Hello, World!"))).andExpect(view().name("greeting"));
+		.andExpect(content().string(containsString("Hello, World!"))).andExpect(view().name("greeting/show"));
 	}
 
 	@Test
@@ -51,8 +51,8 @@ public class GreetingControllerTest {
 	@Test
 	public void getGreetingName() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1?name=Rob").accept(MediaType.TEXT_HTML))
-				.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, Rob!")))
-				.andExpect(view().name("greeting"));
+		.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, Rob!")))
+		.andExpect(view().name("greeting/show"));
 	}
 
 	@Test
