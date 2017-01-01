@@ -1,10 +1,13 @@
 package hello.controllers;
 
+import java.io.UnsupportedEncodingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,6 +41,25 @@ public class GreetingController {
 		model.addAttribute("greeting", greeting.getGreeting(name));
 
 		return "greeting/show";
+	}
+
+	@RequestMapping(value = "/new", method = RequestMethod.GET)
+	public String newGreeting(Model model) {
+		return "greeting/new";
+	}
+
+	@RequestMapping(method = RequestMethod.POST)
+	public String createGreeting(@RequestBody String form, Model model) {
+
+		try {
+			Greeting greeting = Greeting.fromUriParameters(form);
+			greetingService.save(greeting);
+		} catch (UnsupportedEncodingException e) {
+			// Go back to the new greeting page
+			return "greeting/new";
+		}
+
+		return list(model);
 	}
 
 }

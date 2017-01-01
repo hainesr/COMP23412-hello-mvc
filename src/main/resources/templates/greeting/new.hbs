@@ -1,0 +1,9 @@
+{{#partial "content"}}
+  <p>New Greeting</p>
+  <form action="/greeting/" method="post">
+    <input type="text" name="template"></input>
+    <input type="submit"></input>
+  </form>
+{{/partial}}
+
+{{> layouts/base title="New greeting"}}
