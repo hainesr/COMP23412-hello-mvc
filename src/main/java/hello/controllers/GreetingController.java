@@ -48,7 +48,7 @@ public class GreetingController {
 		return "greeting/new";
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public String createGreeting(@RequestBody String form, Model model) {
 
 		try {
