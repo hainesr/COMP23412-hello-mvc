@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.net.URLEncoder;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,4 +63,21 @@ public class GreetingControllerTest {
 		.andExpect(status().isNotAcceptable());
 	}
 
+	@Test
+	public void postGreeting() throws Exception {
+		String greeting = "Howdy!";
+		String encodedGreeting = "template=" + URLEncoder.encode(greeting, "UTF-8");
+
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").content(encodedGreeting)
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).accept(MediaType.TEXT_HTML))
+		.andExpect(status().isOk()).andExpect(content().string(containsString(greeting)))
+		.andExpect(view().name("greeting/index"));
+	}
+
+	@Test
+	public void postJsonGreeting() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").content("{ \"template\": \"Howdy, %s!\" }")
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_HTML))
+		.andExpect(status().isUnsupportedMediaType());
+	}
 }
