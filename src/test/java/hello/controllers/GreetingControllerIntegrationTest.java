@@ -21,21 +21,22 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import hello.Application;
-import hello.models.Greeting;
-import hello.services.GreetingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@Sql(executionPhase = ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:db/greetings-init.sql")
 public class GreetingControllerIntegrationTest {
 
 	@LocalServerPort
 	private int port;
-
-	@Autowired
-	GreetingService greetingService;
 
 	private URL greeting;
 	private URL greetingName;
@@ -48,8 +49,6 @@ public class GreetingControllerIntegrationTest {
 
 	@Before
 	public void setUp() throws MalformedURLException {
-		greetingService.save(new Greeting("Hello, %s!"));
-
 		String url = "http://localhost:" + port + "/greeting/1";
 		this.greeting = new URL(url);
 		this.greetingName = new URL(url + "?name=Rob");
