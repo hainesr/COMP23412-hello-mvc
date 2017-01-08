@@ -76,7 +76,9 @@ public class GreetingControllerIntegrationTest {
 	public void getJsonGreeting() {
 		ResponseEntity<String> response = template.exchange(greeting.toString(), HttpMethod.GET, jsonEntity,
 				String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.NOT_ACCEPTABLE));
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.APPLICATION_JSON_VALUE));
+		assertThat(response.getBody(), containsString("Hello, World!"));
 	}
 
 	@Test
@@ -92,6 +94,8 @@ public class GreetingControllerIntegrationTest {
 	public void getJsonGreetingName() {
 		ResponseEntity<String> response = template.exchange(greetingName.toString(), HttpMethod.GET, jsonEntity,
 				String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.NOT_ACCEPTABLE));
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.APPLICATION_JSON_VALUE));
+		assertThat(response.getBody(), containsString("Hello, Rob!"));
 	}
 }

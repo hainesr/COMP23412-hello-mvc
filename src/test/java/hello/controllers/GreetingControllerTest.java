@@ -2,6 +2,7 @@ package hello.controllers;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -36,32 +37,32 @@ public class GreetingControllerTest {
 	private MockMvc mvc;
 
 	@Test
-	public void getGreeting() throws Exception {
+	public void getGreetingHtml() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 		.andExpect(content().string(containsString("Hello, World!"))).andExpect(view().name("greeting/show"));
 	}
 
 	@Test
-	public void getJsonGreeting() throws Exception {
+	public void getGreetingJson() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isNotAcceptable());
+		.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, World!")));
 	}
 
 	@Test
-	public void getGreetingName() throws Exception {
+	public void getGreetingNameHtml() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1?name=Rob").accept(MediaType.TEXT_HTML))
 		.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, Rob!")))
 		.andExpect(view().name("greeting/show"));
 	}
 
 	@Test
-	public void getJsonGreetingName() throws Exception {
+	public void getGreetingNameJson() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1?name=Rob").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isNotAcceptable());
+		.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, Rob!")));
 	}
 
 	@Test
-	public void postGreeting() throws Exception {
+	public void postGreetingHtml() throws Exception {
 		String greeting = "Howdy!";
 		String encodedGreeting = "template=" + URLEncoder.encode(greeting, "UTF-8");
 
@@ -72,9 +73,13 @@ public class GreetingControllerTest {
 	}
 
 	@Test
-	public void postJsonGreeting() throws Exception {
+	public void postGreetingJson() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").content("{ \"template\": \"Howdy, %s!\" }")
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.TEXT_HTML))
-		.andExpect(status().isUnsupportedMediaType());
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isCreated()).andExpect(content().string(""))
+		.andExpect(header().string("Location", containsString("/greeting/2")));
+
+		mvc.perform(MockMvcRequestBuilders.get("/greeting/2").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk()).andExpect(content().string(containsString("Howdy, World!")));
 	}
 }
