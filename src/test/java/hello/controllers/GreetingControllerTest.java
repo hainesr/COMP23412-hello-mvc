@@ -62,6 +62,18 @@ public class GreetingControllerTest {
 	}
 
 	@Test
+	public void getNewGreetingHtml() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("greeting/new"));
+	}
+
+	@Test
+	public void getNewGreetingJson() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isNotAcceptable());
+	}
+
+	@Test
 	public void postGreetingHtml() throws Exception {
 		String greeting = "Howdy!";
 		String encodedGreeting = "template=" + URLEncoder.encode(greeting, "UTF-8");
