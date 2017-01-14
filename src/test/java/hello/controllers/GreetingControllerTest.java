@@ -66,16 +66,16 @@ public class GreetingControllerTest {
 		String greeting = "Howdy!";
 		String encodedGreeting = "template=" + URLEncoder.encode(greeting, "UTF-8");
 
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").content(encodedGreeting)
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED).accept(MediaType.TEXT_HTML))
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.content(encodedGreeting).accept(MediaType.TEXT_HTML))
 		.andExpect(status().isOk()).andExpect(content().string(containsString(greeting)))
 		.andExpect(view().name("greeting/index"));
 	}
 
 	@Test
 	public void postGreetingJson() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").content("{ \"template\": \"Howdy, %s!\" }")
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated()).andExpect(content().string(""))
 		.andExpect(header().string("Location", containsString("/greeting/2")));
 
