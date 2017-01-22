@@ -1,8 +1,14 @@
 {{#partial "content"}}
-  <p>New Greeting</p>
+  <h1>Add a new greeting</h1>
+
   <form action="/greeting/" method="post">
-    <input type="text" name="template"></input>
-    <input type="submit"></input> <a href="/greeting">Cancel</a>
+    <div class="form-group">
+      <label for="template">Greeting text</label>
+      <input class="form-control" type="text" name="template" id="template" placeholder="Hello, %s!" autofocus />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+    <a class="btn btn-danger" role="button" href="/greeting">Cancel</a>
   </form>
 {{/partial}}
 
