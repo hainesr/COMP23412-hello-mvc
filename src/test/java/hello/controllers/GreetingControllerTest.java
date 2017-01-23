@@ -6,8 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.net.URLEncoder;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,13 +73,16 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postGreetingHtml() throws Exception {
-		String greeting = "Howdy!";
-		String encodedGreeting = "template=" + URLEncoder.encode(greeting, "UTF-8");
+		String greeting = "Howdy, %s!";
+		String greetingResult = String.format(greeting, "World");
 
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.content(encodedGreeting).accept(MediaType.TEXT_HTML))
+				.param("template", greeting).accept(MediaType.TEXT_HTML))
 		.andExpect(status().isOk()).andExpect(content().string(containsString(greeting)))
 		.andExpect(view().name("greeting/index"));
+
+		mvc.perform(MockMvcRequestBuilders.get("/greeting/2").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(content().string(containsString(greetingResult)));
 	}
 
 	@Test
