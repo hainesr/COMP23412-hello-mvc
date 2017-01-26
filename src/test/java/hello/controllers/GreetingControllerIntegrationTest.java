@@ -59,11 +59,11 @@ public class GreetingControllerIntegrationTest {
 
 		HttpHeaders htmlHeaders = new HttpHeaders();
 		htmlHeaders.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
-		htmlEntity = new HttpEntity<String>("parameters", htmlHeaders);
+		htmlEntity = new HttpEntity<String>(htmlHeaders);
 
 		HttpHeaders jsonHeaders = new HttpHeaders();
 		jsonHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-		jsonEntity = new HttpEntity<>("parameters", jsonHeaders);
+		jsonEntity = new HttpEntity<String>(jsonHeaders);
 	}
 
 	@Test
