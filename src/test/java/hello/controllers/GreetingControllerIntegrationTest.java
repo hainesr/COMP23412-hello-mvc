@@ -5,7 +5,6 @@ import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collections;
 
 import org.junit.Before;
@@ -40,8 +39,11 @@ public class GreetingControllerIntegrationTest {
 	@LocalServerPort
 	private int port;
 
-	private URL greeting;
-	private URL greetingName;
+	private String baseUrl;
+	private String greetingUrl;
+	private String greetingNameUrl;
+
+	private static final String INDEX = "/1";
 
 	private HttpEntity<String> htmlEntity;
 	private HttpEntity<String> jsonEntity;
@@ -51,9 +53,9 @@ public class GreetingControllerIntegrationTest {
 
 	@Before
 	public void setUp() throws MalformedURLException {
-		String url = "http://localhost:" + port + "/greeting/1";
-		this.greeting = new URL(url);
-		this.greetingName = new URL(url + "?name=Rob");
+		this.baseUrl = "http://localhost:" + port + "/greeting";
+		this.greetingUrl = baseUrl + INDEX;
+		this.greetingNameUrl = baseUrl + INDEX + "?name=Rob";
 
 		HttpHeaders htmlHeaders = new HttpHeaders();
 		htmlHeaders.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
@@ -66,7 +68,7 @@ public class GreetingControllerIntegrationTest {
 
 	@Test
 	public void getHtmlGreeting() {
-		ResponseEntity<String> response = template.exchange(greeting.toString(), HttpMethod.GET, htmlEntity, String.class);
+		ResponseEntity<String> response = template.exchange(greetingUrl, HttpMethod.GET, htmlEntity, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.TEXT_HTML_VALUE));
 		assertThat(response.getBody(), containsString("Hello, World!"));
@@ -74,8 +76,7 @@ public class GreetingControllerIntegrationTest {
 
 	@Test
 	public void getJsonGreeting() {
-		ResponseEntity<String> response = template.exchange(greeting.toString(), HttpMethod.GET, jsonEntity,
-				String.class);
+		ResponseEntity<String> response = template.exchange(greetingUrl, HttpMethod.GET, jsonEntity, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.APPLICATION_JSON_VALUE));
 		assertThat(response.getBody(), containsString("Hello, World!"));
@@ -83,8 +84,7 @@ public class GreetingControllerIntegrationTest {
 
 	@Test
 	public void getHtmlGreetingName() {
-		ResponseEntity<String> response = template.exchange(greetingName.toString(), HttpMethod.GET, htmlEntity,
-				String.class);
+		ResponseEntity<String> response = template.exchange(greetingNameUrl, HttpMethod.GET, htmlEntity, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.TEXT_HTML_VALUE));
 		assertThat(response.getBody(), containsString("Hello, Rob!"));
@@ -92,8 +92,7 @@ public class GreetingControllerIntegrationTest {
 
 	@Test
 	public void getJsonGreetingName() {
-		ResponseEntity<String> response = template.exchange(greetingName.toString(), HttpMethod.GET, jsonEntity,
-				String.class);
+		ResponseEntity<String> response = template.exchange(greetingNameUrl, HttpMethod.GET, jsonEntity, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.APPLICATION_JSON_VALUE));
 		assertThat(response.getBody(), containsString("Hello, Rob!"));
