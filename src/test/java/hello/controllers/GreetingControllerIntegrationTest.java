@@ -5,6 +5,7 @@ import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.Collections;
 
 import org.junit.Before;
@@ -96,5 +97,31 @@ public class GreetingControllerIntegrationTest {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.APPLICATION_JSON_VALUE));
 		assertThat(response.getBody(), containsString("Hello, Rob!"));
+	}
+
+	@Test
+	public void postHtmlGreeting() {
+		HttpHeaders postHeaders = new HttpHeaders();
+		postHeaders.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
+		postHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		HttpEntity<String> postEntity = new HttpEntity<String>("template=Howdy%2C%20%25s!", postHeaders);
+
+		ResponseEntity<String> response = template.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.TEXT_HTML_VALUE));
+		assertThat(response.getBody(), containsString("Howdy, %s!"));
+	}
+
+	@Test
+	public void postJsonGreeting() {
+		HttpHeaders postHeaders = new HttpHeaders();
+		postHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		postHeaders.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> postEntity = new HttpEntity<String>("{ \"template\": \"Howdy, %s!\" }", postHeaders);
+
+		ResponseEntity<String> response = template.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.CREATED));
+		assertThat(response.getHeaders().getLocation(), equalTo(URI.create(baseUrl + "/2")));
+		assertThat(response.getBody(), equalTo(null));
 	}
 }
