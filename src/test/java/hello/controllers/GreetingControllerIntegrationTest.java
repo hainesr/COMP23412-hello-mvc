@@ -69,10 +69,7 @@ public class GreetingControllerIntegrationTest {
 
 	@Test
 	public void getHtmlGreeting() {
-		ResponseEntity<String> response = template.exchange(greetingUrl, HttpMethod.GET, htmlEntity, String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.TEXT_HTML_VALUE));
-		assertThat(response.getBody(), containsString("Hello, World!"));
+		getHtml(greetingUrl, "Hello, World!");
 	}
 
 	@Test
@@ -85,10 +82,7 @@ public class GreetingControllerIntegrationTest {
 
 	@Test
 	public void getHtmlGreetingName() {
-		ResponseEntity<String> response = template.exchange(greetingNameUrl, HttpMethod.GET, htmlEntity, String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.TEXT_HTML_VALUE));
-		assertThat(response.getBody(), containsString("Hello, Rob!"));
+		getHtml(greetingNameUrl, "Hello, Rob!");
 	}
 
 	@Test
@@ -123,5 +117,12 @@ public class GreetingControllerIntegrationTest {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.CREATED));
 		assertThat(response.getHeaders().getLocation(), equalTo(URI.create(baseUrl + "/2")));
 		assertThat(response.getBody(), equalTo(null));
+	}
+
+	private void getHtml(String url, String expectedBody) {
+		ResponseEntity<String> response = template.exchange(url, HttpMethod.GET, htmlEntity, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.TEXT_HTML_VALUE));
+		assertThat(response.getBody(), containsString(expectedBody));
 	}
 }
