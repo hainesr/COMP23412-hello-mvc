@@ -74,10 +74,7 @@ public class GreetingControllerIntegrationTest {
 
 	@Test
 	public void getJsonGreeting() {
-		ResponseEntity<String> response = template.exchange(greetingUrl, HttpMethod.GET, jsonEntity, String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.APPLICATION_JSON_VALUE));
-		assertThat(response.getBody(), containsString("Hello, World!"));
+		getJson(greetingUrl, "Hello, World!");
 	}
 
 	@Test
@@ -87,10 +84,7 @@ public class GreetingControllerIntegrationTest {
 
 	@Test
 	public void getJsonGreetingName() {
-		ResponseEntity<String> response = template.exchange(greetingNameUrl, HttpMethod.GET, jsonEntity, String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.APPLICATION_JSON_VALUE));
-		assertThat(response.getBody(), containsString("Hello, Rob!"));
+		getJson(greetingNameUrl, "Hello, Rob!");
 	}
 
 	@Test
@@ -123,6 +117,13 @@ public class GreetingControllerIntegrationTest {
 		ResponseEntity<String> response = template.exchange(url, HttpMethod.GET, htmlEntity, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.TEXT_HTML_VALUE));
+		assertThat(response.getBody(), containsString(expectedBody));
+	}
+
+	private void getJson(String url, String expectedBody) {
+		ResponseEntity<String> response = template.exchange(url, HttpMethod.GET, jsonEntity, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.APPLICATION_JSON_VALUE));
 		assertThat(response.getBody(), containsString(expectedBody));
 	}
 }
