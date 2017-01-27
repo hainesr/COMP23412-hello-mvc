@@ -98,6 +98,8 @@ public class GreetingControllerIntegrationTest {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.TEXT_HTML_VALUE));
 		assertThat(response.getBody(), containsString("Howdy, %s!"));
+
+		getHtml(baseUrl + "/2", "Howdy, World!");
 	}
 
 	@Test
@@ -111,6 +113,8 @@ public class GreetingControllerIntegrationTest {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.CREATED));
 		assertThat(response.getHeaders().getLocation(), equalTo(URI.create(baseUrl + "/2")));
 		assertThat(response.getBody(), equalTo(null));
+
+		getJson(baseUrl + "/2", "Howdy, World!");
 	}
 
 	private void getHtml(String url, String expectedBody) {
