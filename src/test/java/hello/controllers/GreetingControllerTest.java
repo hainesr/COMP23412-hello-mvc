@@ -78,8 +78,8 @@ public class GreetingControllerTest {
 
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", greeting).accept(MediaType.TEXT_HTML))
-		.andExpect(status().isOk()).andExpect(content().string(containsString(greeting)))
-		.andExpect(view().name("greeting/index"));
+		.andExpect(status().isFound()).andExpect(content().string(""))
+		.andExpect(view().name("redirect:/greeting"));
 
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/2").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 		.andExpect(content().string(containsString(greetingResult)));
@@ -94,5 +94,19 @@ public class GreetingControllerTest {
 
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/2").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(content().string(containsString("Howdy, World!")));
+	}
+
+	@Test
+	public void postEmptyGreetingHtml() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("template", "").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("greeting/new"));
+	}
+
+	@Test
+	public void postEmptyGreetingJson() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"template\": \"\" }").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""));
 	}
 }
