@@ -1,5 +1,8 @@
 package hello.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,10 +68,11 @@ public class GreetingController {
 
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = {
 			MediaType.TEXT_HTML_VALUE })
-	public String createGreetingFromForm(@RequestBody @Valid @ModelAttribute("greeting") Greeting greeting,
-			BindingResult result) {
+	public String createGreetingFromForm(@RequestBody @Valid @ModelAttribute Greeting greeting,
+			BindingResult errors, Model model) {
 
-		if (result.hasErrors()) {
+		if (errors.hasErrors()) {
+			model.addAttribute("errors", formErrorHelper(errors));
 			return "greeting/new";
 		}
 
@@ -90,4 +95,13 @@ public class GreetingController {
 		return ResponseEntity.created(location.toUri()).build();
 	}
 
+	private Map<String, String> formErrorHelper(BindingResult errors) {
+		Map<String, String> fieldErrors = new HashMap<String, String>();
+
+		for (FieldError f : errors.getFieldErrors()) {
+			fieldErrors.put(f.getField(), f.getDefaultMessage());
+		}
+
+		return fieldErrors;
+	}
 }
