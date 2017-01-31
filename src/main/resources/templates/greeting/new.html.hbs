@@ -1,10 +1,17 @@
 {{#partial "content"}}
   <h1>Add a new greeting</h1>
 
+  {{#if errors}}
+    <p class="h2 text-danger">There were errors in the submitted greeting!</p>
+  {{/if}}
+
   <form action="/greeting/" method="post">
-    <div class="form-group">
+    <div class="form-group {{#if errors.template}}has-error{{/if}}">
       <label for="template">Greeting text</label>
       <input class="form-control" type="text" name="template" id="template" placeholder="Hello, %s!" autofocus />
+      {{#if errors.template}}
+      <p class="text-danger">{{errors.template}}</p>
+      {{/if}}
     </div>
 
     <button class="btn btn-primary" type="submit">Submit</button>

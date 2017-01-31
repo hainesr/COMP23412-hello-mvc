@@ -1,16 +1,11 @@
 package hello.models;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Greeting implements Serializable {
@@ -21,6 +16,7 @@ public class Greeting implements Serializable {
 	@GeneratedValue
 	private long id;
 
+	@Size(min = 1, max = 30)
 	private String template;
 
 	public Greeting() {
@@ -50,15 +46,4 @@ public class Greeting implements Serializable {
 	public String toString() {
 		return String.format("Greeting [id = %d, template = %s]", this.id, this.template);
 	}
-
-	public static Greeting fromUriParameters(String parameters) throws UnsupportedEncodingException {
-
-		// Need to fake a parameter string with "?" at the start.
-		UriComponents uri = UriComponentsBuilder.fromUriString("?" + parameters).build();
-		MultiValueMap<String, String> fields = uri.getQueryParams();
-		String template = URLDecoder.decode(fields.getFirst("template"), "UTF-8");
-
-		return new Greeting(template);
-	}
-
 }

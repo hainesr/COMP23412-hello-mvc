@@ -1,6 +1,8 @@
 package hello.controllers;
 
-import java.io.UnsupportedEncodingException;
+import static hello.helpers.ErrorHelpers.formErrorHelper;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,27 +66,30 @@ public class GreetingController {
 
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = {
 			MediaType.TEXT_HTML_VALUE })
-	public String createGreetingFromForm(@RequestBody String form, Model model) {
+	public String createGreetingFromForm(@RequestBody @Valid @ModelAttribute Greeting greeting,
+			BindingResult errors, Model model) {
 
-		try {
-			Greeting greeting = Greeting.fromUriParameters(form);
-			greetingService.save(greeting);
-		} catch (UnsupportedEncodingException e) {
-			// Go back to the new greeting page
+		if (errors.hasErrors()) {
+			model.addAttribute("errors", formErrorHelper(errors));
 			return "greeting/new";
 		}
 
-		return list(model);
+		greetingService.save(greeting);
+
+		return "redirect:/greeting";
 	}
 
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<?> createGreetingFromJson(@RequestBody Greeting greeting,
-			UriComponentsBuilder b) {
+	public @ResponseBody ResponseEntity<?> createGreetingFromJson(@RequestBody @Valid Greeting greeting,
+			BindingResult result, UriComponentsBuilder b) {
+
+		if (result.hasErrors()) {
+			return ResponseEntity.unprocessableEntity().build();
+		}
 
 		greetingService.save(greeting);
 		UriComponents location = b.path("/greeting/{id}").buildAndExpand(greeting.getId());
 
 		return ResponseEntity.created(location.toUri()).build();
 	}
-
 }
