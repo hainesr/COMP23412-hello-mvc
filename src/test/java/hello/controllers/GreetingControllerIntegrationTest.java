@@ -95,9 +95,7 @@ public class GreetingControllerIntegrationTest {
 		HttpEntity<String> postEntity = new HttpEntity<String>("template=Howdy%2C%20%25s!", postHeaders);
 
 		ResponseEntity<String> response = template.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.TEXT_HTML_VALUE));
-		assertThat(response.getBody(), containsString("Howdy, %s!"));
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.FOUND));
 
 		getHtml(baseUrl + "/2", "Howdy, World!");
 	}
