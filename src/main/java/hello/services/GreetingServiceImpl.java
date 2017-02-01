@@ -28,4 +28,8 @@ public class GreetingServiceImpl implements GreetingService {
 		greetingRepository.save(greeting);
 	}
 
+	@Override
+	public void delete(long id) {
+		greetingRepository.delete(id);
+	}
 }
