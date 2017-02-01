@@ -11,4 +11,6 @@ public interface GreetingService {
 	public Greeting findOne(long id);
 
 	public void delete(long id);
+
+	public void deleteAll();
 }

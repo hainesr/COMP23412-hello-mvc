@@ -32,4 +32,9 @@ public class GreetingServiceImpl implements GreetingService {
 	public void delete(long id) {
 		greetingRepository.delete(id);
 	}
+
+	@Override
+	public void deleteAll() {
+		greetingRepository.deleteAll();
+	}
 }
