@@ -97,6 +97,20 @@ public class GreetingControllerTest {
 	}
 
 	@Test
+	public void postLongGreetingHtml() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("template", "012345678901234567890123456789A").accept(MediaType.TEXT_HTML))
+		.andExpect(status().isOk()).andExpect(view().name("greeting/new"));
+	}
+
+	@Test
+	public void postLongGreetingJson() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"template\": \"012345678901234567890123456789A\" }").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""));
+	}
+
+	@Test
 	public void postEmptyGreetingHtml() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
