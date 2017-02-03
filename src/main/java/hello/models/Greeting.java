@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 @Entity
 public class Greeting implements Serializable {
 
@@ -16,7 +18,8 @@ public class Greeting implements Serializable {
 	@GeneratedValue
 	private long id;
 
-	@Size(min = 1, max = 30)
+	@NotEmpty(message = "The greeting cannot be empty.")
+	@Size(max = 30, message = "The greeting must have 30 characters or less.")
 	private String template;
 
 	public Greeting() {
