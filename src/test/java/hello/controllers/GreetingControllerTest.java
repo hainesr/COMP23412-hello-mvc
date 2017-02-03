@@ -97,16 +97,30 @@ public class GreetingControllerTest {
 	}
 
 	@Test
+	public void postBadGreetingHtml() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("template", "no placeholder").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("greeting/new"));
+	}
+
+	@Test
+	public void postBadGreetingJson() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"template\": \"no placeholder\" }").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""));
+	}
+
+	@Test
 	public void postLongGreetingHtml() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("template", "012345678901234567890123456789A").accept(MediaType.TEXT_HTML))
+				.param("template", "abcdefghij %s klmnopqrst uvwxyz").accept(MediaType.TEXT_HTML))
 		.andExpect(status().isOk()).andExpect(view().name("greeting/new"));
 	}
 
 	@Test
 	public void postLongGreetingJson() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
-				.content("{ \"template\": \"012345678901234567890123456789A\" }").accept(MediaType.APPLICATION_JSON))
+				.content("{ \"template\": \"abcdefghij %s klmnopqrst uvwxyz\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""));
 	}
 
