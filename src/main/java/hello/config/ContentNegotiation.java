@@ -41,7 +41,7 @@ public class ContentNegotiation extends WebMvcConfigurerAdapter {
 		List<ViewResolver> resolvers = new ArrayList<ViewResolver>();
 		resolvers.add(getHtmlTemplateViewResolver());
 		resolvers.add(getJsonTemplateViewResolver());
-		resolvers.add(new JsonViewResolver());
+		resolvers.add(new JsonViewResolver(isDefaultProfile()));
 
 		ContentNegotiatingViewResolver resolver = new ContentNegotiatingViewResolver();
 		resolver.setContentNegotiationManager(manager);
