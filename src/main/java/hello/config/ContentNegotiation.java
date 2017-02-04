@@ -1,11 +1,13 @@
 package hello.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.servlet.ViewResolver;
@@ -22,6 +24,9 @@ public class ContentNegotiation extends WebMvcConfigurerAdapter {
 
 	@Autowired
 	private HandlebarsProperties handlebars;
+
+	@Autowired
+	private Environment environment;
 
 	@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
@@ -50,6 +55,7 @@ public class ContentNegotiation extends WebMvcConfigurerAdapter {
 		handlebars.applyToViewResolver(resolver);
 		resolver.setSuffix(".html.hbs");
 		resolver.setContentType(MediaType.TEXT_HTML_VALUE);
+		resolver.setCache(!isDefaultProfile());
 		resolver.setOrder(1);
 
 		return resolver;
@@ -60,9 +66,15 @@ public class ContentNegotiation extends WebMvcConfigurerAdapter {
 		handlebars.applyToViewResolver(resolver);
 		resolver.setSuffix(".json.hbs");
 		resolver.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		resolver.setCache(!isDefaultProfile());
 		resolver.setOrder(2);
 
 		return resolver;
 	}
 
+	private boolean isDefaultProfile() {
+		String[] profiles = environment.getActiveProfiles();
+
+		return (profiles.length == 0) || Arrays.asList(environment.getActiveProfiles()).contains("default");
+	}
 }
