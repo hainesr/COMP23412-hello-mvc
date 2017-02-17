@@ -1,7 +1,5 @@
 package hello.models;
 
-import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,9 +9,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-public class Greeting implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class Greeting {
 
 	@Id
 	@GeneratedValue
