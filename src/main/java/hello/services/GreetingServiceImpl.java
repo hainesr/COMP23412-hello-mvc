@@ -14,6 +14,11 @@ public class GreetingServiceImpl implements GreetingService {
 	private GreetingRepository greetingRepository;
 
 	@Override
+	public long count() {
+		return greetingRepository.count();
+	}
+
+	@Override
 	public Iterable<Greeting> findAll() {
 		return greetingRepository.findAll();
 	}
