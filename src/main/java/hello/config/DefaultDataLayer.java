@@ -23,6 +23,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 public class DefaultDataLayer {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final static String PACKAGES = "hello.models";
 
 	@Bean
 	public DataSource dataSource(DataSourceProperties dataSourceProperties) {
@@ -40,7 +41,7 @@ public class DefaultDataLayer {
 		LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
 		bean.setDataSource(dataSource);
 		bean.setJpaVendorAdapter(jpaVendorAdapter);
-		bean.setPackagesToScan("hello");
+		bean.setPackagesToScan(PACKAGES);
 		bean.afterPropertiesSet();
 
 		return bean.getObject();
