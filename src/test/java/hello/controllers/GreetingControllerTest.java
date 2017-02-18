@@ -1,6 +1,8 @@
 package hello.controllers;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import hello.Hello;
+import hello.services.GreetingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Hello.class)
@@ -29,6 +32,9 @@ public class GreetingControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
+
+	@Autowired
+	private GreetingService greetingService;
 
 	@Test
 	public void getGreetingHtml() throws Exception {
@@ -69,18 +75,30 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postGreetingHtml() throws Exception {
+		long before = greetingService.count();
+
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML))
 		.andExpect(status().isFound()).andExpect(content().string(""))
 		.andExpect(view().name("redirect:/greeting"));
+
+		long after = greetingService.count();
+
+		assertThat((before + 1), equalTo(after));
 	}
 
 	@Test
 	public void postGreetingJson() throws Exception {
+		long before = greetingService.count();
+
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated()).andExpect(content().string(""))
 		.andExpect(header().string("Location", containsString("/greeting/"))).andReturn();
+
+		long after = greetingService.count();
+
+		assertThat((before + 1), equalTo(after));
 	}
 
 	@Test

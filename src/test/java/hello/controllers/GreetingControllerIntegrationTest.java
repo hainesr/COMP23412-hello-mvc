@@ -25,6 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import hello.Hello;
+import hello.services.GreetingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Hello.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -46,6 +47,9 @@ public class GreetingControllerIntegrationTest {
 
 	@Autowired
 	private TestRestTemplate template;
+
+	@Autowired
+	private GreetingService greetingService;
 
 	@Before
 	public void setUp() throws MalformedURLException {
@@ -89,8 +93,12 @@ public class GreetingControllerIntegrationTest {
 		postHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		HttpEntity<String> postEntity = new HttpEntity<String>("template=Howdy%2C%20%25s!", postHeaders);
 
+		long before = greetingService.count();
 		ResponseEntity<String> response = template.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
+		long after = greetingService.count();
+
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.FOUND));
+		assertThat((before + 1), equalTo(after));
 	}
 
 	@Test
@@ -100,10 +108,14 @@ public class GreetingControllerIntegrationTest {
 		postHeaders.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> postEntity = new HttpEntity<String>("{ \"template\": \"Howdy, %s!\" }", postHeaders);
 
+		long before = greetingService.count();
 		ResponseEntity<String> response = template.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
+		long after = greetingService.count();
+
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.CREATED));
 		assertThat(response.getHeaders().getLocation().toString(), containsString(baseUrl));
 		assertThat(response.getBody(), equalTo(null));
+		assertThat((before + 1), equalTo(after));
 	}
 
 	private void getHtml(String url, String expectedBody) {
