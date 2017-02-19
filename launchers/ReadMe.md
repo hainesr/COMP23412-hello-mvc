@@ -1,12 +1,12 @@
-# Eclipse launchers for mvc-dev
+# Eclipse launchers for Hello MVC
 
 ## Synopsis
 
-These launch files are set up to run various configurations of `mvc-dev` from within Eclipse.
+These launch files are set up to run various configurations of `Hello MVC` from within Eclipse.
 
-* `mvc-dev package.launch` runs all tests and then creates a runnable `jar` file, with all required dependencies, so that `mvc-dev` can be run from the command-line.
-* `mvc-dev run.launch` runs `mvc-dev` within Eclipse.
-* `mvc-dev test.launch` runs all the tests included for `mvc-dev`.
+* `Hello MVC package.launch` runs all tests and then creates a runnable `jar` file, with all required dependencies, so that `Hello MVC` can be run from the command-line.
+* `Hello MVC run.launch` runs `Hello MVC` within Eclipse.
+* `Hello MVC test.launch` runs all the tests included for `Hello MVC`.
 
 ## Usage
 

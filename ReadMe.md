@@ -1,4 +1,4 @@
-# Example MVC Web Application
+# Hello MVC - Example Web Application
 ## COMP23420 Software Engineering, University of Manchester, UK
 ### Robert Haines, Markel Vigo, Caroline Jay
 
