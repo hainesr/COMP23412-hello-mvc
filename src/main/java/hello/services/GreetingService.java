@@ -4,6 +4,8 @@ import hello.models.Greeting;
 
 public interface GreetingService {
 
+	public long count();
+
 	public void save(Greeting greeting);
 
 	public Iterable<Greeting> findAll();

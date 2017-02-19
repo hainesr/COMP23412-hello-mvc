@@ -1,6 +1,8 @@
 package hello.controllers;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -12,27 +14,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import hello.Hello;
+import hello.services.GreetingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Hello.class)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-@Sql(executionPhase = ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:db/greetings-init.sql")
+@Transactional
 @ActiveProfiles("test")
 public class GreetingControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
+
+	@Autowired
+	private GreetingService greetingService;
 
 	@Test
 	public void getGreetingHtml() throws Exception {
@@ -73,27 +75,30 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postGreetingHtml() throws Exception {
-		String greeting = "Howdy, %s!";
-		String greetingResult = String.format(greeting, "World");
+		long before = greetingService.count();
 
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("template", greeting).accept(MediaType.TEXT_HTML))
+				.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML))
 		.andExpect(status().isFound()).andExpect(content().string(""))
 		.andExpect(view().name("redirect:/greeting"));
 
-		mvc.perform(MockMvcRequestBuilders.get("/greeting/2").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-		.andExpect(content().string(containsString(greetingResult)));
+		long after = greetingService.count();
+
+		assertThat((before + 1), equalTo(after));
 	}
 
 	@Test
 	public void postGreetingJson() throws Exception {
+		long before = greetingService.count();
+
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated()).andExpect(content().string(""))
-		.andExpect(header().string("Location", containsString("/greeting/2")));
+		.andExpect(header().string("Location", containsString("/greeting/"))).andReturn();
 
-		mvc.perform(MockMvcRequestBuilders.get("/greeting/2").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk()).andExpect(content().string(containsString("Howdy, World!")));
+		long after = greetingService.count();
+
+		assertThat((before + 1), equalTo(after));
 	}
 
 	@Test

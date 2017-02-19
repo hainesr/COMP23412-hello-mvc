@@ -1,4 +1,4 @@
-package hello.controllers;
+package hello;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -19,7 +19,7 @@ import hello.Hello;
 @SpringBootTest(classes = Hello.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class RootControllerTest {
+public class HomePageTest {
 
 	@Autowired
 	private MockMvc mvc;
