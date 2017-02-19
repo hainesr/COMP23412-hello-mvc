@@ -1,4 +1,4 @@
-package hello.services;
+package hello.dao;
 
 import org.springframework.data.repository.CrudRepository;
 

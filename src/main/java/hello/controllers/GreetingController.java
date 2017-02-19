@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import hello.dao.GreetingService;
 import hello.models.Greeting;
-import hello.services.GreetingService;
 
 @Controller
 @RequestMapping(value = "/greeting")

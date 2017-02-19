@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import hello.Hello;
-import hello.services.GreetingService;
+import hello.dao.GreetingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Hello.class)

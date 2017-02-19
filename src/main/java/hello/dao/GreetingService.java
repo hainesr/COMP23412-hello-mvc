@@ -1,4 +1,4 @@
-package hello.services;
+package hello.dao;
 
 import hello.models.Greeting;
 
