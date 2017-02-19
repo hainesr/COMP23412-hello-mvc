@@ -1,8 +1,8 @@
-package hello.services;
+package hello.dao;
 
 import org.springframework.data.repository.CrudRepository;
 
-import hello.models.Greeting;
+import hello.entities.Greeting;
 
 public interface GreetingRepository extends CrudRepository<Greeting, Long> {
 

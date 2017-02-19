@@ -25,7 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import hello.Hello;
-import hello.services.GreetingService;
+import hello.dao.GreetingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Hello.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
