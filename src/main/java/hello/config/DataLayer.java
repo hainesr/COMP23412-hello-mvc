@@ -14,7 +14,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 @Configuration
 public class DataLayer {
 
-	private final static String PACKAGES = "hello.models";
+	private final static String PACKAGES = "hello.entities";
 
 	@Bean
 	public EntityManagerFactory entityManagerFactory(DataSource dataSource, JpaVendorAdapter jpaVendorAdapter) {

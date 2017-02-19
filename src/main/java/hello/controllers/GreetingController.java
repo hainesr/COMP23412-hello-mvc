@@ -22,7 +22,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import hello.dao.GreetingService;
-import hello.models.Greeting;
+import hello.entities.Greeting;
 
 @Controller
 @RequestMapping(value = "/greeting")

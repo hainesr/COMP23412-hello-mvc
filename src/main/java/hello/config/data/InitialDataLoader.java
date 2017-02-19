@@ -9,7 +9,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import hello.dao.GreetingService;
-import hello.models.Greeting;
+import hello.entities.Greeting;
 
 @Component
 @Profile({ "default", "test" })

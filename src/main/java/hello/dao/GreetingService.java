@@ -1,6 +1,6 @@
 package hello.dao;
 
-import hello.models.Greeting;
+import hello.entities.Greeting;
 
 public interface GreetingService {
 
