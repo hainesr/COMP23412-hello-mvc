@@ -1,7 +1,5 @@
 package hello.controllers;
 
-import static hello.helpers.ErrorHelpers.formErrorHelper;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +62,10 @@ public class GreetingController {
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
 	public String newGreetingHtml(Model model) {
+		if (!model.containsAttribute("greeting")) {
+			model.addAttribute("greeting", new Greeting());
+		}
+
 		return "greeting/new";
 	}
 
@@ -78,7 +80,7 @@ public class GreetingController {
 			BindingResult errors, Model model) {
 
 		if (errors.hasErrors()) {
-			model.addAttribute("errors", formErrorHelper(errors));
+			model.addAttribute("greeting", greeting);
 			return "greeting/new";
 		}
 

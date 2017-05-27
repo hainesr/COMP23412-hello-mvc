@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>A greeting</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/webjars/font-awesome/css/font-awesome.min.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Add a new greeting</h1>
+    
+    <form action="#" th:action="@{/greeting}" th:object="${greeting}" method="post">
+      <div class="form-group" th:classappend="${#fields.hasErrors('template')}? has-error">
+        <label for="template">Greeting text</label>
+        <input class="form-control" type="text" name="template" id="template" placeholder="Hello, %s!" autofocus="autofocus" />
+        <p class="text-danger" th:if="${#fields.hasErrors('template')}" th:errors="*{template}">errors</p>
+      </div>
+    
+      <button class="btn btn-primary" type="submit"><i class="fa fa-bookmark-o" aria-hidden="true"></i> Save</button>
+      <a class="btn btn-warning" role="button" href="/greeting"><i class="fa fa-ban" aria-hidden="true"></i> Cancel</a>
+    </form>
+  </div>
+
+  <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
