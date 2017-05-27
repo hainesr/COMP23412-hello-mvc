@@ -47,8 +47,7 @@ public class GreetingController {
 		return new ResponseEntity<Iterable<Greeting>>(greetingService.findAll(), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE,
-			MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
 	public String greeting(@PathVariable("id") long id,
 			@RequestParam(value = "name", required = false, defaultValue = "World") String name, Model model) {
 
@@ -56,6 +55,11 @@ public class GreetingController {
 		model.addAttribute("greeting", greeting.getGreeting(name));
 
 		return "greeting/show";
+	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public @ResponseBody ResponseEntity<Greeting> greetingJson(@PathVariable("id") long id) {
+		return new ResponseEntity<Greeting>(greetingService.findOne(id), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
