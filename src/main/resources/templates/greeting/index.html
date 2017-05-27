@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>All greetings</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/webjars/font-awesome/css/font-awesome.min.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>All greetings</h1>
+
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Template</th>
+          <th>Examples</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="g : ${greetings}">
+          <td th:text="${g.id}">1</td>
+          <td th:text="${g.template}">Hello, %s!</td>
+          <td>
+            <a th:each="n : ${names}" th:href="${(#mvc.url('GC#greeting').arg(0, g.id).arg(1, n)).build()}" th:text="${n}">Rob</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      <a class="btn btn-primary" role="button" href="/greeting/new"><i class="fa fa-plus" aria-hidden="true"></i> Add a new greeting</a>
+    </p>
+  </div>
+
+  <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
