@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>A greeting</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/webjars/font-awesome/css/font-awesome.min.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Greeting</h1>
+
+    <blockquote>
+      <p th:text="${greeting}">Hello, World!</p>
+    </blockquote>
+
+    <a class="btn btn-primary" role="button" th:href="${(#mvc.url('GC#list')).build()}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a>
+  </div>
+
+  <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
