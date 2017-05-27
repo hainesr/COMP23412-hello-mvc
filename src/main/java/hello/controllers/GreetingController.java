@@ -33,14 +33,18 @@ public class GreetingController {
 	@Autowired
 	private GreetingService greetingService;
 
-	@RequestMapping(method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE,
-			MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
 	public String list(Model model) {
 
 		model.addAttribute("greetings", greetingService.findAll());
 		model.addAttribute("names", NAMES);
 
 		return "greeting/index";
+	}
+
+	@RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public @ResponseBody ResponseEntity<Iterable<Greeting>> listJson() {
+		return new ResponseEntity<Iterable<Greeting>>(greetingService.findAll(), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE,
