@@ -45,7 +45,7 @@ public class GreetingControllerTest {
 	@Test
 	public void getGreetingJson() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, World!")));
+				.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, %s!")));
 	}
 
 	@Test
@@ -53,12 +53,6 @@ public class GreetingControllerTest {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1?name=Rob").accept(MediaType.TEXT_HTML))
 		.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, Rob!")))
 		.andExpect(view().name("greeting/show"));
-	}
-
-	@Test
-	public void getGreetingNameJson() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.get("/greeting/1?name=Rob").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk()).andExpect(content().string(containsString("Hello, Rob!")));
 	}
 
 	@Test
