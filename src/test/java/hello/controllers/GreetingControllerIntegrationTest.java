@@ -73,17 +73,12 @@ public class GreetingControllerIntegrationTest {
 
 	@Test
 	public void getJsonGreeting() {
-		getJson(greetingUrl, "Hello, World!");
+		getJson(greetingUrl, "Hello, %s!");
 	}
 
 	@Test
 	public void getHtmlGreetingName() {
 		getHtml(greetingNameUrl, "Hello, Rob!");
-	}
-
-	@Test
-	public void getJsonGreetingName() {
-		getJson(greetingNameUrl, "Hello, Rob!");
 	}
 
 	@Test
