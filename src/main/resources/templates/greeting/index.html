@@ -21,7 +21,9 @@
           <td th:text="${g.id}">1</td>
           <td th:text="${g.template}">Hello, %s!</td>
           <td>
-            <a th:each="n : ${names}" th:href="${(#mvc.url('GC#greeting').arg(0, g.id).arg(1, n)).build()}" th:text="${n}">Rob</a>
+            <th:block th:each="n, state : ${names}">
+              <a th:href="${(#mvc.url('GC#greeting').arg(0, g.id).arg(1, n)).build()}" th:text="${n}">Rob</a><th:block th:if="!${state.last}">, </th:block>
+            </th:block>
           </td>
         </tr>
       </tbody>
