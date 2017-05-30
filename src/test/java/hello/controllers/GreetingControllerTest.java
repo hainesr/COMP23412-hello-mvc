@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,7 +60,7 @@ public class GreetingControllerTest {
 	public void getGreetingHtml() throws Exception {
 		when(greetingService.findOne(1)).thenReturn(greeting);
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-		.andExpect(view().name("greeting/show"));
+		.andExpect(view().name("greeting/show")).andExpect(handler().methodName("greeting"));
 		verify(greeting).getGreeting("World");
 	}
 
@@ -68,27 +69,29 @@ public class GreetingControllerTest {
 		Greeting g = new Greeting("%s");
 		when(greetingService.findOne(1)).thenReturn(g);
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+		.andExpect(handler().methodName("greetingJson"));
 	}
 
 	@Test
 	public void getGreetingNameHtml() throws Exception {
 		when(greetingService.findOne(1)).thenReturn(greeting);
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1?name=Rob").accept(MediaType.TEXT_HTML))
-		.andExpect(status().isOk()).andExpect(view().name("greeting/show"));
+		.andExpect(status().isOk()).andExpect(view().name("greeting/show"))
+		.andExpect(handler().methodName("greeting"));
 		verify(greeting).getGreeting("Rob");
 	}
 
 	@Test
 	public void getNewGreetingHtml() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-		.andExpect(view().name("greeting/new"));
+		.andExpect(view().name("greeting/new")).andExpect(handler().methodName("newGreetingHtml"));
 	}
 
 	@Test
 	public void getNewGreetingJson() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isNotAcceptable());
+		.andExpect(status().isNotAcceptable()).andExpect(handler().methodName("newGreetingJson"));
 	}
 
 	@Test
@@ -97,7 +100,8 @@ public class GreetingControllerTest {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML))
 		.andExpect(status().isFound()).andExpect(content().string(""))
-		.andExpect(view().name("redirect:/greeting")).andExpect(model().hasNoErrors());
+		.andExpect(view().name("redirect:/greeting")).andExpect(model().hasNoErrors())
+		.andExpect(handler().methodName("createGreetingFromForm"));
 		verify(greetingService).save(arg.capture());
 		assertThat("Howdy, %s!", equalTo(arg.getValue().getTemplate()));
 	}
@@ -108,7 +112,8 @@ public class GreetingControllerTest {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated()).andExpect(content().string(""))
-		.andExpect(header().string("Location", containsString("/greeting/")));
+		.andExpect(header().string("Location", containsString("/greeting/")))
+		.andExpect(handler().methodName("createGreetingFromJson"));
 		verify(greetingService).save(arg.capture());
 		assertThat("Howdy, %s!", equalTo(arg.getValue().getTemplate()));
 	}
@@ -118,7 +123,8 @@ public class GreetingControllerTest {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "no placeholder").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 		.andExpect(view().name("greeting/new"))
-		.andExpect(model().attributeHasFieldErrors("greeting", "template"));
+		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
+		.andExpect(handler().methodName("createGreetingFromForm"));
 		verify(greetingService, never()).save(greeting);
 	}
 
@@ -126,7 +132,8 @@ public class GreetingControllerTest {
 	public void postBadGreetingJson() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"no placeholder\" }").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""));
+		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
+		.andExpect(handler().methodName("createGreetingFromJson"));
 		verify(greetingService, never()).save(greeting);
 	}
 
@@ -135,7 +142,8 @@ public class GreetingControllerTest {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "abcdefghij %s klmnopqrst uvwxyz").accept(MediaType.TEXT_HTML))
 		.andExpect(status().isOk()).andExpect(view().name("greeting/new"))
-		.andExpect(model().attributeHasFieldErrors("greeting", "template"));
+		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
+		.andExpect(handler().methodName("createGreetingFromForm"));
 		verify(greetingService, never()).save(greeting);
 	}
 
@@ -143,7 +151,8 @@ public class GreetingControllerTest {
 	public void postLongGreetingJson() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"abcdefghij %s klmnopqrst uvwxyz\" }").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""));
+		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
+		.andExpect(handler().methodName("createGreetingFromJson"));
 		verify(greetingService, never()).save(greeting);
 	}
 
@@ -152,7 +161,8 @@ public class GreetingControllerTest {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 		.andExpect(view().name("greeting/new"))
-		.andExpect(model().attributeHasFieldErrors("greeting", "template"));
+		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
+		.andExpect(handler().methodName("createGreetingFromForm"));
 		verify(greetingService, never()).save(greeting);
 	}
 
@@ -160,7 +170,8 @@ public class GreetingControllerTest {
 	public void postEmptyGreetingJson() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"\" }").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""));
+		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
+		.andExpect(handler().methodName("createGreetingFromJson"));
 		verify(greetingService, never()).save(greeting);
 	}
 }
