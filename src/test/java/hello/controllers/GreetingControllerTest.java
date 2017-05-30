@@ -107,7 +107,7 @@ public class GreetingControllerTest {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated()).andExpect(content().string(""))
-		.andExpect(header().string("Location", containsString("/greeting/"))).andReturn();
+				.andExpect(header().string("Location", containsString("/greeting/")));
 		verify(greetingService).save(arg.capture());
 		assertThat("Howdy, %s!", equalTo(arg.getValue().getTemplate()));
 	}
