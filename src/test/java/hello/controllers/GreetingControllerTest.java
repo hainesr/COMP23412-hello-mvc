@@ -5,6 +5,7 @@ import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
@@ -13,6 +14,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +58,25 @@ public class GreetingControllerTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		mvc = MockMvcBuilders.standaloneSetup(greetingController).build();
+	}
+
+	@Test
+	public void getEmptyGreetingsListHtml() throws Exception {
+		when(greetingService.findAll()).thenReturn(Collections.<Greeting> emptyList());
+
+		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("greeting/index")).andExpect(handler().methodName("list"));
+
+		verifyZeroInteractions(greeting);
+	}
+
+	@Test
+	public void getEmptyGreetingsListJson() throws Exception {
+		when(greetingService.findAll()).thenReturn(Collections.<Greeting> emptyList());
+
+		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk()).andExpect(handler().methodName("listJson"))
+		.andExpect(jsonPath("$.length()", equalTo(0)));
 	}
 
 	@Test
