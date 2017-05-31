@@ -59,8 +59,10 @@ public class GreetingControllerTest {
 	@Test
 	public void getGreetingHtml() throws Exception {
 		when(greetingService.findOne(1)).thenReturn(greeting);
+
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 		.andExpect(view().name("greeting/show")).andExpect(handler().methodName("greeting"));
+
 		verify(greeting).getGreeting("World");
 	}
 
@@ -68,6 +70,7 @@ public class GreetingControllerTest {
 	public void getGreetingJson() throws Exception {
 		Greeting g = new Greeting("%s");
 		when(greetingService.findOne(1)).thenReturn(g);
+
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 		.andExpect(handler().methodName("greetingJson"));
@@ -76,9 +79,11 @@ public class GreetingControllerTest {
 	@Test
 	public void getGreetingNameHtml() throws Exception {
 		when(greetingService.findOne(1)).thenReturn(greeting);
+
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1?name=Rob").accept(MediaType.TEXT_HTML))
 		.andExpect(status().isOk()).andExpect(view().name("greeting/show"))
 		.andExpect(handler().methodName("greeting"));
+
 		verify(greeting).getGreeting("Rob");
 	}
 
@@ -97,11 +102,13 @@ public class GreetingControllerTest {
 	@Test
 	public void postGreetingHtml() throws Exception {
 		ArgumentCaptor<Greeting> arg = ArgumentCaptor.forClass(Greeting.class);
+
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML))
 		.andExpect(status().isFound()).andExpect(content().string(""))
 		.andExpect(view().name("redirect:/greeting")).andExpect(model().hasNoErrors())
 		.andExpect(handler().methodName("createGreetingFromForm"));
+
 		verify(greetingService).save(arg.capture());
 		assertThat("Howdy, %s!", equalTo(arg.getValue().getTemplate()));
 	}
@@ -109,11 +116,13 @@ public class GreetingControllerTest {
 	@Test
 	public void postGreetingJson() throws Exception {
 		ArgumentCaptor<Greeting> arg = ArgumentCaptor.forClass(Greeting.class);
+
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated()).andExpect(content().string(""))
 		.andExpect(header().string("Location", containsString("/greeting/")))
 		.andExpect(handler().methodName("createGreetingFromJson"));
+
 		verify(greetingService).save(arg.capture());
 		assertThat("Howdy, %s!", equalTo(arg.getValue().getTemplate()));
 	}
@@ -125,6 +134,7 @@ public class GreetingControllerTest {
 		.andExpect(view().name("greeting/new"))
 		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
 		.andExpect(handler().methodName("createGreetingFromForm"));
+
 		verify(greetingService, never()).save(greeting);
 	}
 
@@ -134,6 +144,7 @@ public class GreetingControllerTest {
 				.content("{ \"template\": \"no placeholder\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
 		.andExpect(handler().methodName("createGreetingFromJson"));
+
 		verify(greetingService, never()).save(greeting);
 	}
 
@@ -144,6 +155,7 @@ public class GreetingControllerTest {
 		.andExpect(status().isOk()).andExpect(view().name("greeting/new"))
 		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
 		.andExpect(handler().methodName("createGreetingFromForm"));
+
 		verify(greetingService, never()).save(greeting);
 	}
 
@@ -153,6 +165,7 @@ public class GreetingControllerTest {
 				.content("{ \"template\": \"abcdefghij %s klmnopqrst uvwxyz\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
 		.andExpect(handler().methodName("createGreetingFromJson"));
+
 		verify(greetingService, never()).save(greeting);
 	}
 
@@ -163,6 +176,7 @@ public class GreetingControllerTest {
 		.andExpect(view().name("greeting/new"))
 		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
 		.andExpect(handler().methodName("createGreetingFromForm"));
+
 		verify(greetingService, never()).save(greeting);
 	}
 
@@ -172,6 +186,7 @@ public class GreetingControllerTest {
 				.content("{ \"template\": \"\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
 		.andExpect(handler().methodName("createGreetingFromJson"));
+
 		verify(greetingService, never()).save(greeting);
 	}
 }
