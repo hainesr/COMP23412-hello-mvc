@@ -12,7 +12,10 @@
       <p th:text="${greeting}">Hello, World!</p>
     </blockquote>
 
-    <a class="btn btn-primary" role="button" th:href="@{/greeting}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a>
+    <form th:action="@{/greeting/{num}(num=${id})}" th:method="delete">
+      <a class="btn btn-primary" role="button" th:href="@{/greeting}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a>
+      <button type="submit" class="btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
+    </form>
   </div>
 </body>
 </html>
