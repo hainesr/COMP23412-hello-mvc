@@ -14,6 +14,7 @@
           <th>Id</th>
           <th>Template</th>
           <th>Examples</th>
+          <th>Options</th>
         </tr>
       </thead>
       <tbody>
@@ -26,6 +27,11 @@
             <th:block th:each="n, state : ${names}">
               <a th:href="@{/greetings/{num}(num=${g.id},name=${n})}" th:text="${n}">Rob</a><th:block th:if="!${state.last}">, </th:block>
             </th:block>
+          </td>
+          <td>
+            <form th:action="${(#mvc.url('GC#deleteGreeting').arg(0, g.id)).build()}" th:method="delete">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
           </td>
         </tr>
       </tbody>
