@@ -40,11 +40,6 @@ public class GreetingController {
 		return "greeting/index";
 	}
 
-	@RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	public @ResponseBody ResponseEntity<Iterable<Greeting>> listJson() {
-		return new ResponseEntity<Iterable<Greeting>>(greetingService.findAll(), HttpStatus.OK);
-	}
-
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
 	public String greeting(@PathVariable("id") long id,
 			@RequestParam(value = "name", required = false, defaultValue = "World") String name, Model model) {

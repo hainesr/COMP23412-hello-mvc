@@ -61,7 +61,7 @@ public class GreetingControllerTest {
 	}
 
 	@Test
-	public void getEmptyGreetingsListHtml() throws Exception {
+	public void getEmptyGreetingsList() throws Exception {
 		when(greetingService.findAll()).thenReturn(Collections.<Greeting> emptyList());
 
 		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
@@ -71,32 +71,13 @@ public class GreetingControllerTest {
 	}
 
 	@Test
-	public void getEmptyGreetingsListJson() throws Exception {
-		when(greetingService.findAll()).thenReturn(Collections.<Greeting> emptyList());
-
-		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk()).andExpect(handler().methodName("listJson"))
-		.andExpect(jsonPath("$.length()", equalTo(0)));
-	}
-
-	@Test
-	public void getGreetingsListHtml() throws Exception {
+	public void getGreetingsList() throws Exception {
 		when(greetingService.findAll()).thenReturn(Collections.<Greeting> singletonList(greeting));
 
 		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 		.andExpect(view().name("greeting/index")).andExpect(handler().methodName("list"));
 
 		verifyZeroInteractions(greeting);
-	}
-
-	@Test
-	public void getGreetingsListJson() throws Exception {
-		Greeting g = new Greeting("%s");
-		when(greetingService.findAll()).thenReturn(Collections.<Greeting> singletonList(g));
-
-		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk()).andExpect(handler().methodName("listJson"))
-		.andExpect(jsonPath("$.length()", equalTo(1)));
 	}
 
 	@Test
