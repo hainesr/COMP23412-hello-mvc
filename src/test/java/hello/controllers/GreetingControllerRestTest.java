@@ -79,4 +79,10 @@ public class GreetingControllerRestTest {
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 		.andExpect(handler().methodName("greeting")).andExpect(jsonPath("$.template", equalTo("%s")));
 	}
+
+	@Test
+	public void getNewGreeting() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isNotAcceptable()).andExpect(handler().methodName("newGreeting"));
+	}
 }

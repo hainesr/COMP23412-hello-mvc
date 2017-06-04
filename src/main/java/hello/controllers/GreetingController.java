@@ -3,7 +3,6 @@ package hello.controllers;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -51,17 +50,12 @@ public class GreetingController {
 	}
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
-	public String newGreetingHtml(Model model) {
+	public String newGreeting(Model model) {
 		if (!model.containsAttribute("greeting")) {
 			model.addAttribute("greeting", new Greeting());
 		}
 
 		return "greeting/new";
-	}
-
-	@RequestMapping(value = "/new", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<?> newGreetingJson() {
-		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
 	}
 
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = {

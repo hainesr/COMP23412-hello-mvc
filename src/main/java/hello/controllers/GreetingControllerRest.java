@@ -28,4 +28,9 @@ public class GreetingControllerRest {
 	public ResponseEntity<Greeting> greeting(@PathVariable("id") long id) {
 		return new ResponseEntity<Greeting>(greetingService.findOne(id), HttpStatus.OK);
 	}
+
+	@RequestMapping(value = "/new", method = RequestMethod.GET)
+	public ResponseEntity<?> newGreeting() {
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+	}
 }

@@ -101,15 +101,9 @@ public class GreetingControllerTest {
 	}
 
 	@Test
-	public void getNewGreetingHtml() throws Exception {
+	public void getNewGreeting() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-		.andExpect(view().name("greeting/new")).andExpect(handler().methodName("newGreetingHtml"));
-	}
-
-	@Test
-	public void getNewGreetingJson() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isNotAcceptable()).andExpect(handler().methodName("newGreetingJson"));
+		.andExpect(view().name("greeting/new")).andExpect(handler().methodName("newGreeting"));
 	}
 
 	@Test
