@@ -180,4 +180,12 @@ public class GreetingControllerApiTest {
 
 		verify(greetingService).deleteById(1);
 	}
+
+	@Test
+	public void deleteAllGreetings() throws Exception {
+		mvc.perform(delete("/api/greetings").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent())
+				.andExpect(content().string("")).andExpect(handler().methodName("deleteAllGreetings"));
+
+		verify(greetingService).deleteAll();
+	}
 }
