@@ -19,7 +19,9 @@
       <tbody>
         <tr th:each="g : ${greetings}">
           <td th:text="${g.id}">1</td>
-          <td th:text="${g.template}">Hello, %s!</td>
+          <td>
+            <a th:href="${(#mvc.url('GC#greeting').arg(0, g.id)).build()}" th:text="${g.template}">Hello, %s!</a>
+          </td>
           <td>
             <th:block th:each="n, state : ${names}">
               <a th:href="${(#mvc.url('GC#greeting').arg(0, g.id).arg(1, n)).build()}" th:text="${n}">Rob</a><th:block th:if="!${state.last}">, </th:block>
