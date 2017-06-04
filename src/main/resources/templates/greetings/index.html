@@ -37,9 +37,10 @@
       </tbody>
     </table>
 
-    <p>
+    <form th:action="${(#mvc.url('GC#deleteAllGreetings')).build()}" th:method="delete">
       <a class="btn btn-primary" role="button" href="/greetings/new"><i class="fa-solid fa-plus" aria-hidden="true"></i> Add a new greeting</a>
-    </p>
+      <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> Delete All</button>
+    </form>
   </div>
 </body>
 </html>
