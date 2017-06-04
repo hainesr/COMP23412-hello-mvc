@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,5 +74,12 @@ public class GreetingControllerApi {
 		EntityModel<Greeting> entity = greetingAssembler.toModel(newGreeting);
 
 		return ResponseEntity.created(entity.getRequiredLink(IanaLinkRelations.SELF).toUri()).build();
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteGreeting(@PathVariable("id") long id) {
+		greetingService.deleteById(id);
+
+		return ResponseEntity.noContent().build();
 	}
 }
