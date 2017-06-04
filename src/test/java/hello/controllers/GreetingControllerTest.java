@@ -198,7 +198,7 @@ public class GreetingControllerTest {
 	@Test
 	public void deleteGreeting() throws Exception {
 		mvc.perform(delete("/greetings/1").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
-				.andExpect(view().name("redirect:/greeting")).andExpect(handler().methodName("deleteGreeting"));
+				.andExpect(view().name("redirect:/greetings")).andExpect(handler().methodName("deleteGreeting"));
 
 		verify(greetingService).deleteById(1);
 	}
