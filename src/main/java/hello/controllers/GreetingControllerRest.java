@@ -19,18 +19,18 @@ import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
 @RestController
-@RequestMapping(value = "/greeting")
+@RequestMapping(value = "/greeting", produces = MediaType.APPLICATION_JSON_VALUE)
 public class GreetingControllerRest {
 
 	@Autowired
 	private GreetingService greetingService;
 
-	@RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<Iterable<Greeting>> list() {
 		return new ResponseEntity<Iterable<Greeting>>(greetingService.findAll(), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Greeting> greeting(@PathVariable("id") long id) {
 		return new ResponseEntity<Greeting>(greetingService.findOne(id), HttpStatus.OK);
 	}

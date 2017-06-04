@@ -18,7 +18,7 @@ import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
 @Controller
-@RequestMapping(value = "/greeting")
+@RequestMapping(value = "/greeting", produces = MediaType.TEXT_HTML_VALUE)
 public class GreetingController {
 
 	private static final String[] NAMES = { "Rob", "Caroline", "Markel" };
@@ -26,7 +26,7 @@ public class GreetingController {
 	@Autowired
 	private GreetingService greetingService;
 
-	@RequestMapping(method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
+	@RequestMapping(method = RequestMethod.GET)
 	public String list(Model model) {
 
 		model.addAttribute("greetings", greetingService.findAll());
@@ -35,7 +35,7 @@ public class GreetingController {
 		return "greeting/index";
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public String greeting(@PathVariable("id") long id,
 			@RequestParam(value = "name", required = false, defaultValue = "World") String name, Model model) {
 
@@ -45,7 +45,7 @@ public class GreetingController {
 		return "greeting/show";
 	}
 
-	@RequestMapping(value = "/new", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
+	@RequestMapping(value = "/new", method = RequestMethod.GET)
 	public String newGreeting(Model model) {
 		if (!model.containsAttribute("greeting")) {
 			model.addAttribute("greeting", new Greeting());
@@ -54,8 +54,7 @@ public class GreetingController {
 		return "greeting/new";
 	}
 
-	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = {
-			MediaType.TEXT_HTML_VALUE })
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public String createGreeting(@RequestBody @Valid @ModelAttribute Greeting greeting,
 			BindingResult errors, Model model) {
 
