@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -81,7 +80,7 @@ public class GreetingControllerTest {
 	}
 
 	@Test
-	public void getGreetingHtml() throws Exception {
+	public void getGreeting() throws Exception {
 		when(greetingService.findOne(1)).thenReturn(greeting);
 
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
@@ -91,18 +90,7 @@ public class GreetingControllerTest {
 	}
 
 	@Test
-	public void getGreetingJson() throws Exception {
-		Greeting g = new Greeting("%s");
-		when(greetingService.findOne(1)).thenReturn(g);
-
-		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-		.andExpect(handler().methodName("greetingJson"))
-		.andExpect(jsonPath("$.template", equalTo("%s")));
-	}
-
-	@Test
-	public void getGreetingNameHtml() throws Exception {
+	public void getGreetingName() throws Exception {
 		when(greetingService.findOne(1)).thenReturn(greeting);
 
 		mvc.perform(MockMvcRequestBuilders.get("/greeting/1?name=Rob").accept(MediaType.TEXT_HTML))

@@ -50,11 +50,6 @@ public class GreetingController {
 		return "greeting/show";
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	public @ResponseBody ResponseEntity<Greeting> greetingJson(@PathVariable("id") long id) {
-		return new ResponseEntity<Greeting>(greetingService.findOne(id), HttpStatus.OK);
-	}
-
 	@RequestMapping(value = "/new", method = RequestMethod.GET, produces = { MediaType.TEXT_HTML_VALUE })
 	public String newGreetingHtml(Model model) {
 		if (!model.containsAttribute("greeting")) {

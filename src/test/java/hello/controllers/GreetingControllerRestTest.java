@@ -2,6 +2,7 @@ package hello.controllers;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -67,5 +68,15 @@ public class GreetingControllerRestTest {
 		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(handler().methodName("list"))
 		.andExpect(jsonPath("$.length()", equalTo(1)));
+	}
+
+	@Test
+	public void getGreeting() throws Exception {
+		Greeting g = new Greeting("%s");
+		when(greetingService.findOne(1)).thenReturn(g);
+
+		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+		.andExpect(handler().methodName("greeting")).andExpect(jsonPath("$.template", equalTo("%s")));
 	}
 }
