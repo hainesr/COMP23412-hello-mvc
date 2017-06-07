@@ -3,6 +3,7 @@ package hello.controllers;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
@@ -53,17 +52,16 @@ public class GreetingControllerRest {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createGreeting(@RequestBody @Valid Greeting greeting,
-			BindingResult result, UriComponentsBuilder b) {
+	public ResponseEntity<?> createGreeting(@RequestBody @Valid Greeting greeting, BindingResult result) {
 
 		if (result.hasErrors()) {
 			return ResponseEntity.unprocessableEntity().build();
 		}
 
 		greetingService.save(greeting);
-		UriComponents location = b.path("/greeting/{id}").buildAndExpand(greeting.getId());
+		URI location = linkTo(GreetingControllerRest.class).slash(greeting.getId()).toUri();
 
-		return ResponseEntity.created(location.toUri()).build();
+		return ResponseEntity.created(location).build();
 	}
 
 	private Resource<Greeting> greetingToResource(Greeting greeting) {
