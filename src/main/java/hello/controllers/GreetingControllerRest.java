@@ -1,12 +1,17 @@
 package hello.controllers;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +35,8 @@ public class GreetingControllerRest {
 	private GreetingService greetingService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<Iterable<Greeting>> list() {
-		return new ResponseEntity<Iterable<Greeting>>(greetingService.findAll(), HttpStatus.OK);
+	public Resources<Resource<Greeting>> list() {
+		return greetingToResource(greetingService.findAll());
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -64,5 +69,16 @@ public class GreetingControllerRest {
 		Link selfLink = linkTo(GreetingControllerRest.class).slash(greeting.getId()).withSelfRel();
 
 		return new Resource<Greeting>(greeting, selfLink);
+	}
+
+	private Resources<Resource<Greeting>> greetingToResource(Iterable<Greeting> greetings) {
+		Link selfLink = linkTo(methodOn(GreetingControllerRest.class).list()).withSelfRel();
+
+		List<Resource<Greeting>> resources = new ArrayList<Resource<Greeting>>();
+		for (Greeting greeting : greetings) {
+			resources.add(greetingToResource(greeting));
+		}
+
+		return new Resources<Resource<Greeting>>(resources, selfLink);
 	}
 }
