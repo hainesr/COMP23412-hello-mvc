@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
 @RestController
-@RequestMapping(value = "/greeting", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/greeting", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 public class GreetingControllerRest {
 
 	@Autowired
