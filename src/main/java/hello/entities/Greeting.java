@@ -7,8 +7,10 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.hateoas.core.Relation;
 
 @Entity
+@Relation(collectionRelation = "greetings")
 public class Greeting {
 
 	@Id
