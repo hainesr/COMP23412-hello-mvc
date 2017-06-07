@@ -1,8 +1,12 @@
 package hello.controllers;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +35,10 @@ public class GreetingControllerRest {
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<Greeting> greeting(@PathVariable("id") long id) {
-		return new ResponseEntity<Greeting>(greetingService.findOne(id), HttpStatus.OK);
+	public Resource<Greeting> greeting(@PathVariable("id") long id) {
+		Greeting greeting = greetingService.findOne(id);
+
+		return greetingToResource(greeting);
 	}
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET)
@@ -52,5 +58,11 @@ public class GreetingControllerRest {
 		UriComponents location = b.path("/greeting/{id}").buildAndExpand(greeting.getId());
 
 		return ResponseEntity.created(location.toUri()).build();
+	}
+
+	private Resource<Greeting> greetingToResource(Greeting greeting) {
+		Link selfLink = linkTo(GreetingControllerRest.class).slash(greeting.getId()).withSelfRel();
+
+		return new Resource<Greeting>(greeting, selfLink);
 	}
 }
