@@ -1,6 +1,7 @@
 package hello.controllers;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.never;
@@ -73,7 +74,8 @@ public class GreetingControllerRestTest {
 
 		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(handler().methodName("list"))
-		.andExpect(jsonPath("$.length()", equalTo(0)));
+		.andExpect(jsonPath("$.length()", equalTo(1)))
+		.andExpect(jsonPath("$._links.self.href", endsWith("/greeting")));
 	}
 
 	@Test
@@ -83,7 +85,9 @@ public class GreetingControllerRestTest {
 
 		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(handler().methodName("list"))
-		.andExpect(jsonPath("$.length()", equalTo(1)));
+		.andExpect(jsonPath("$.length()", equalTo(2)))
+		.andExpect(jsonPath("$._links.self.href", endsWith("/greeting")))
+		.andExpect(jsonPath("$._embedded.greetings.length()", equalTo(1)));
 	}
 
 	@Test
