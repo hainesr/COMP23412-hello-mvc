@@ -92,12 +92,15 @@ public class GreetingControllerRestTest {
 
 	@Test
 	public void getGreeting() throws Exception {
+		int id = 0;
 		Greeting g = new Greeting("%s");
-		when(greetingService.findOne(1)).thenReturn(g);
+		when(greetingService.findOne(id)).thenReturn(g);
 
-		mvc.perform(MockMvcRequestBuilders.get("/greeting/1").accept(MediaType.APPLICATION_JSON))
+		mvc.perform(MockMvcRequestBuilders.get("/greeting/{id}", id).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-		.andExpect(handler().methodName("greeting")).andExpect(jsonPath("$.template", equalTo("%s")));
+		.andExpect(handler().methodName("greeting")).andExpect(jsonPath("$.id", equalTo(id)))
+		.andExpect(jsonPath("$.template", equalTo("%s")))
+		.andExpect(jsonPath("$._links.self.href", endsWith("" + id)));
 	}
 
 	@Test
