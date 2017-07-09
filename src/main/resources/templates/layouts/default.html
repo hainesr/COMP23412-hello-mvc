@@ -10,6 +10,31 @@
   <link rel="stylesheet" href="/webjars/font-awesome/css/font-awesome.min.css" />
 </head>
 <body>
+  <nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#hello-navbar-collapse" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+        </button>
+        <a class="navbar-brand" href="/">Hello MVC</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="hello-navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li><a th:href="@{/greeting}">Greetings</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right" sec:authorize="isAuthenticated()">
+          <li><p class="navbar-text"><i class="fa fa-user" aria-hidden="true"></i> Signed in as <span sec:authentication="name"></span></p></li>
+          <li>
+            <form class="navbar-form" th:action="@{/sign-out}" method="post">
+              <button type="submit" class="btn btn-warning"><i class="fa fa-sign-out" aria-hidden="true"></i> Sign out</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
   <div class="container">
     <div layout:fragment="content">
       Main page body goes here...
