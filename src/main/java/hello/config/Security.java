@@ -15,14 +15,15 @@ public class Security extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		// Use form login for the Web, and HTTP basic for the API.
 		http.authorizeRequests().antMatchers("/").permitAll().anyRequest().hasRole(ADMIN_ROLE).and().formLogin()
 		.loginPage("/sign-in").permitAll().and().logout().logoutUrl("/sign-out").logoutSuccessUrl("/")
-		.permitAll();
+		.permitAll().and().httpBasic();
 	}
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth.inMemoryAuthentication().withUser("Rob").password("Haines").roles(ADMIN_ROLE).and().withUser("Caroline")
-				.password("Jay").roles(ADMIN_ROLE).and().withUser("Markel").password("Vigo").roles(ADMIN_ROLE);
+		.password("Jay").roles(ADMIN_ROLE).and().withUser("Markel").password("Vigo").roles(ADMIN_ROLE);
 	}
 }
