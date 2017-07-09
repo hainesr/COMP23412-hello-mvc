@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Home</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <div class="jumbotron">
+      <h1>Spring MVC Example Application</h1>
+
+      <p>Test various elements of MVC development in Java using:</p>
+      <ul>
+        <li><a href="http://projects.spring.io/spring-framework/">The Spring Framework</a></li>
+        <li><a href="http://projects.spring.io/spring-security/">Spring Security</a></li>
+        <li><a href="http://www.thymeleaf.org/">Thymeleaf</a></li>
+      </ul>
+      <p>Try out the <a th:href="@{/greeting}">Greetings</a> page.</p>
+    </div>
+  </div>
+</body>
+</html>
