@@ -17,6 +17,7 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,12 +25,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import hello.config.Security;
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
 @RestController
 @RequestMapping(value = "/greeting", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 public class GreetingControllerRest {
+
+	private static final String AUTH_ROLE = "hasRole('" + Security.ADMIN_ROLE + "')";
 
 	@Autowired
 	private GreetingService greetingService;
@@ -52,6 +56,7 @@ public class GreetingControllerRest {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize(AUTH_ROLE)
 	public ResponseEntity<?> createGreeting(@RequestBody @Valid Greeting greeting, BindingResult result) {
 
 		if (result.hasErrors()) {
