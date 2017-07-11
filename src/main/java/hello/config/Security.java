@@ -17,9 +17,16 @@ public class Security extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		// Use form login for the Web, and HTTP basic for the API.
-		http.authorizeRequests().anyRequest().permitAll().and().formLogin().loginPage("/sign-in").permitAll().and()
-				.logout().logoutUrl("/sign-out").logoutSuccessUrl("/").permitAll().and().httpBasic();
+
+		// Allow all requests and we use method security in the controllers.
+		http.authorizeRequests().anyRequest().permitAll();
+
+		// Use form login/logout for the Web.
+		http.formLogin().loginPage("/sign-in").permitAll();
+		http.logout().logoutUrl("/sign-out").logoutSuccessUrl("/").permitAll();
+
+		// Use HTTP basic for the API.
+		http.httpBasic();
 	}
 
 	@Autowired
