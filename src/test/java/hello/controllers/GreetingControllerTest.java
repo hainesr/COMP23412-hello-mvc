@@ -6,6 +6,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -14,6 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collections;
 
+import javax.servlet.Filter;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,26 +25,33 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import hello.Hello;
+import hello.config.Security;
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Hello.class)
 @AutoConfigureMockMvc
+@ContextConfiguration(classes = Security.class)
 @ActiveProfiles("test")
 public class GreetingControllerTest {
 
 	private MockMvc mvc;
+
+	@Autowired
+	private Filter springSecurityFilterChain;
 
 	@Mock
 	private Greeting greeting;
@@ -54,7 +65,8 @@ public class GreetingControllerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		mvc = MockMvcBuilders.standaloneSetup(greetingController).build();
+		mvc = MockMvcBuilders.standaloneSetup(greetingController).apply(springSecurity(springSecurityFilterChain))
+				.build();
 	}
 
 	@Test
@@ -109,7 +121,7 @@ public class GreetingControllerTest {
 		ArgumentCaptor<Greeting> arg = ArgumentCaptor.forClass(Greeting.class);
 
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML))
+				.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML).with(csrf()))
 		.andExpect(status().isFound()).andExpect(content().string(""))
 		.andExpect(view().name("redirect:/greeting")).andExpect(model().hasNoErrors())
 		.andExpect(handler().methodName("createGreeting"));
@@ -121,7 +133,8 @@ public class GreetingControllerTest {
 	@Test
 	public void postBadGreeting() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("template", "no placeholder").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.param("template", "no placeholder").accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isOk())
 		.andExpect(view().name("greeting/new"))
 		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
 		.andExpect(handler().methodName("createGreeting"));
@@ -132,7 +145,7 @@ public class GreetingControllerTest {
 	@Test
 	public void postLongGreeting() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("template", "abcdefghij %s klmnopqrst uvwxyz").accept(MediaType.TEXT_HTML))
+				.param("template", "abcdefghij %s klmnopqrst uvwxyz").accept(MediaType.TEXT_HTML).with(csrf()))
 		.andExpect(status().isOk()).andExpect(view().name("greeting/new"))
 		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
 		.andExpect(handler().methodName("createGreeting"));
@@ -143,7 +156,7 @@ public class GreetingControllerTest {
 	@Test
 	public void postEmptyGreeting() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
-				.param("template", "").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.param("template", "").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
 		.andExpect(view().name("greeting/new"))
 		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
 		.andExpect(handler().methodName("createGreeting"));
