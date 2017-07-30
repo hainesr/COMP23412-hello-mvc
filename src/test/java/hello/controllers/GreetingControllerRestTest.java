@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -15,6 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collections;
 
+import javax.servlet.Filter;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,10 +25,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -33,16 +38,21 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import hello.Hello;
 import hello.config.MessageConverterUtil;
+import hello.config.Security;
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Hello.class)
 @AutoConfigureMockMvc
+@ContextConfiguration(classes = Security.class)
 @ActiveProfiles("test")
 public class GreetingControllerRestTest {
 
 	private MockMvc mvc;
+
+	@Autowired
+	private Filter springSecurityFilterChain;
 
 	@Mock
 	private Greeting greeting;
@@ -57,7 +67,7 @@ public class GreetingControllerRestTest {
 	public void setup() {
 
 		MockitoAnnotations.initMocks(this);
-		mvc = MockMvcBuilders.standaloneSetup(greetingController)
+		mvc = MockMvcBuilders.standaloneSetup(greetingController).apply(springSecurity(springSecurityFilterChain))
 				.setMessageConverters(MessageConverterUtil.getMessageConverters()).build();
 	}
 
