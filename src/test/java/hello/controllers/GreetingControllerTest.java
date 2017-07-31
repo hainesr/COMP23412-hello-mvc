@@ -1,5 +1,6 @@
 package hello.controllers;
 
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.never;
@@ -11,6 +12,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -112,9 +114,16 @@ public class GreetingControllerTest {
 	}
 
 	@Test
+	public void getNewGreetingNoAuth() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").accept(MediaType.TEXT_HTML))
+		.andExpect(status().isFound()).andExpect(header().string("Location", endsWith("/sign-in")));
+	}
+
+	@Test
 	public void getNewGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-		.andExpect(view().name("greeting/new")).andExpect(handler().methodName("newGreeting"));
+		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").with(user("Rob")).accept(MediaType.TEXT_HTML))
+		.andExpect(status().isOk()).andExpect(view().name("greeting/new"))
+		.andExpect(handler().methodName("newGreeting"));
 	}
 
 	@Test
