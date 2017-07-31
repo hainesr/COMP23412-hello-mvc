@@ -31,7 +31,7 @@ import hello.entities.Greeting;
 
 @RestController
 @RequestMapping(value = "/greeting", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
-public class GreetingControllerRest {
+public class GreetingControllerApi {
 
 	private static final String AUTH_ROLE = "hasRole('" + Security.ADMIN_ROLE + "')";
 
@@ -64,19 +64,19 @@ public class GreetingControllerRest {
 		}
 
 		greetingService.save(greeting);
-		URI location = linkTo(GreetingControllerRest.class).slash(greeting.getId()).toUri();
+		URI location = linkTo(GreetingControllerApi.class).slash(greeting.getId()).toUri();
 
 		return ResponseEntity.created(location).build();
 	}
 
 	private Resource<Greeting> greetingToResource(Greeting greeting) {
-		Link selfLink = linkTo(GreetingControllerRest.class).slash(greeting.getId()).withSelfRel();
+		Link selfLink = linkTo(GreetingControllerApi.class).slash(greeting.getId()).withSelfRel();
 
 		return new Resource<Greeting>(greeting, selfLink);
 	}
 
 	private Resources<Resource<Greeting>> greetingToResource(Iterable<Greeting> greetings) {
-		Link selfLink = linkTo(methodOn(GreetingControllerRest.class).list()).withSelfRel();
+		Link selfLink = linkTo(methodOn(GreetingControllerApi.class).list()).withSelfRel();
 
 		List<Resource<Greeting>> resources = new ArrayList<Resource<Greeting>>();
 		for (Greeting greeting : greetings) {

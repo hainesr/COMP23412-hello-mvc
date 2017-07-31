@@ -47,7 +47,7 @@ import hello.entities.Greeting;
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = Security.class)
 @ActiveProfiles("test")
-public class GreetingControllerRestTest {
+public class GreetingControllerApiTest {
 
 	private MockMvc mvc;
 
@@ -61,7 +61,7 @@ public class GreetingControllerRestTest {
 	private GreetingService greetingService;
 
 	@InjectMocks
-	private GreetingControllerRest greetingController;
+	private GreetingControllerApi greetingController;
 
 	@Before
 	public void setup() {
