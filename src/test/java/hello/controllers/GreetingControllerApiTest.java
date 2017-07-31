@@ -75,10 +75,10 @@ public class GreetingControllerApiTest {
 	public void getEmptyGreetingsList() throws Exception {
 		when(greetingService.findAll()).thenReturn(Collections.<Greeting> emptyList());
 
-		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.APPLICATION_JSON))
+		mvc.perform(MockMvcRequestBuilders.get("/api/greeting").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(handler().methodName("list"))
 		.andExpect(jsonPath("$.length()", equalTo(1)))
-		.andExpect(jsonPath("$._links.self.href", endsWith("/greeting")));
+		.andExpect(jsonPath("$._links.self.href", endsWith("/api/greeting")));
 	}
 
 	@Test
@@ -86,10 +86,10 @@ public class GreetingControllerApiTest {
 		Greeting g = new Greeting("%s");
 		when(greetingService.findAll()).thenReturn(Collections.<Greeting> singletonList(g));
 
-		mvc.perform(MockMvcRequestBuilders.get("/greeting").accept(MediaType.APPLICATION_JSON))
+		mvc.perform(MockMvcRequestBuilders.get("/api/greeting").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(handler().methodName("list"))
 		.andExpect(jsonPath("$.length()", equalTo(2)))
-		.andExpect(jsonPath("$._links.self.href", endsWith("/greeting")))
+		.andExpect(jsonPath("$._links.self.href", endsWith("/api/greeting")))
 		.andExpect(jsonPath("$._embedded.greetings.length()", equalTo(1)));
 	}
 
@@ -99,7 +99,7 @@ public class GreetingControllerApiTest {
 		Greeting g = new Greeting("%s");
 		when(greetingService.findOne(id)).thenReturn(g);
 
-		mvc.perform(MockMvcRequestBuilders.get("/greeting/{id}", id).accept(MediaType.APPLICATION_JSON))
+		mvc.perform(MockMvcRequestBuilders.get("/api/greeting/{id}", id).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 		.andExpect(handler().methodName("greeting")).andExpect(jsonPath("$.id", equalTo(id)))
 		.andExpect(jsonPath("$.template", equalTo("%s")))
@@ -108,7 +108,7 @@ public class GreetingControllerApiTest {
 
 	@Test
 	public void getNewGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").accept(MediaType.APPLICATION_JSON))
+		mvc.perform(MockMvcRequestBuilders.get("/api/greeting/new").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotAcceptable()).andExpect(handler().methodName("newGreeting"));
 	}
 
@@ -116,10 +116,10 @@ public class GreetingControllerApiTest {
 	public void postGreeting() throws Exception {
 		ArgumentCaptor<Greeting> arg = ArgumentCaptor.forClass(Greeting.class);
 
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(MockMvcRequestBuilders.post("/api/greeting").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated()).andExpect(content().string(""))
-		.andExpect(header().string("Location", containsString("/greeting/")))
+		.andExpect(header().string("Location", containsString("/api/greeting/")))
 		.andExpect(handler().methodName("createGreeting"));
 
 		verify(greetingService).save(arg.capture());
@@ -128,7 +128,7 @@ public class GreetingControllerApiTest {
 
 	@Test
 	public void postBadGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(MockMvcRequestBuilders.post("/api/greeting").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"no placeholder\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
 		.andExpect(handler().methodName("createGreeting"));
@@ -138,7 +138,7 @@ public class GreetingControllerApiTest {
 
 	@Test
 	public void postLongGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(MockMvcRequestBuilders.post("/api/greeting").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"abcdefghij %s klmnopqrst uvwxyz\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
 		.andExpect(handler().methodName("createGreeting"));
@@ -148,7 +148,7 @@ public class GreetingControllerApiTest {
 
 	@Test
 	public void postEmptyGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(MockMvcRequestBuilders.post("/api/greeting").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
 		.andExpect(handler().methodName("createGreeting"));

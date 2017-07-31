@@ -30,7 +30,7 @@ import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
 @RestController
-@RequestMapping(value = "/greeting", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
+@RequestMapping(value = "/api/greeting", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 public class GreetingControllerApi {
 
 	private static final String AUTH_ROLE = "hasRole('" + Security.ADMIN_ROLE + "')";

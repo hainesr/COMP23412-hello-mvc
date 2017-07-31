@@ -55,7 +55,7 @@ public class GreetingControllerApiIntegrationTest {
 
 	@Before
 	public void setUp() throws MalformedURLException {
-		this.baseUrl = "http://localhost:" + port + "/greeting";
+		this.baseUrl = "http://localhost:" + port + "/api/greeting";
 		this.greetingUrl = baseUrl + INDEX;
 
 		HttpHeaders headers = new HttpHeaders();
