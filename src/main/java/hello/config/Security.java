@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -14,11 +15,17 @@ public class Security extends WebSecurityConfigurerAdapter {
 
 	private static final String ADMIN_ROLE = "ADMINISTRATOR";
 
+	// List the mappings/methods for which no authorisation is required.
+	// We specifically omit '/greeting/new' here so that we require log in
+	// before submitting the new greeting.
+	private static final RequestMatcher[] NO_AUTH = { new AntPathRequestMatcher("/", "GET"),
+			new AntPathRequestMatcher("/api/**", "GET"), new AntPathRequestMatcher("/greeting", "GET"),
+			new AntPathRequestMatcher("/greeting/{id:[\\d]+}", "GET") };
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		// By default, all requests are authenticated except /.
-		http.authorizeRequests().requestMatchers(new AntPathRequestMatcher("/**", "GET")).permitAll().anyRequest()
-		.authenticated();
+		// By default, all requests are authenticated except our specific list.
+		http.authorizeRequests().requestMatchers(NO_AUTH).permitAll().anyRequest().authenticated();
 
 		// Use form login/logout for the Web.
 		http.formLogin().loginPage("/sign-in").permitAll();
