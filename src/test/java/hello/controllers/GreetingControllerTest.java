@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
@@ -120,7 +121,8 @@ public class GreetingControllerTest {
 	public void postGreeting() throws Exception {
 		ArgumentCaptor<Greeting> arg = ArgumentCaptor.forClass(Greeting.class);
 
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob"))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML).with(csrf()))
 		.andExpect(status().isFound()).andExpect(content().string(""))
 		.andExpect(view().name("redirect:/greeting")).andExpect(model().hasNoErrors())
@@ -132,7 +134,8 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postBadGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob"))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "no placeholder").accept(MediaType.TEXT_HTML).with(csrf()))
 		.andExpect(status().isOk())
 		.andExpect(view().name("greeting/new"))
@@ -144,7 +147,8 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postLongGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob"))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "abcdefghij %s klmnopqrst uvwxyz").accept(MediaType.TEXT_HTML).with(csrf()))
 		.andExpect(status().isOk()).andExpect(view().name("greeting/new"))
 		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
@@ -155,7 +159,8 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postEmptyGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob"))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
 		.andExpect(view().name("greeting/new"))
 		.andExpect(model().attributeHasFieldErrors("greeting", "template"))

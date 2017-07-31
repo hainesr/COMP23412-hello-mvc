@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import hello.config.Security;
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
@@ -23,7 +21,6 @@ import hello.entities.Greeting;
 @RequestMapping(value = "/greeting", produces = MediaType.TEXT_HTML_VALUE)
 public class GreetingController {
 
-	private static final String AUTH_ROLE = "hasRole('" + Security.ADMIN_ROLE + "')";
 	private static final String[] NAMES = { "Rob", "Caroline", "Markel" };
 
 	@Autowired
@@ -49,7 +46,6 @@ public class GreetingController {
 	}
 
 	@RequestMapping(value = "/new", method = RequestMethod.GET)
-	@PreAuthorize(AUTH_ROLE)
 	public String newGreeting(Model model) {
 		if (!model.containsAttribute("greeting")) {
 			model.addAttribute("greeting", new Greeting());
@@ -59,7 +55,6 @@ public class GreetingController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	@PreAuthorize(AUTH_ROLE)
 	public String createGreeting(@RequestBody @Valid @ModelAttribute Greeting greeting,
 			BindingResult errors, Model model) {
 
