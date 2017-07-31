@@ -13,8 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import hello.Hello;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Hello.class)
 @AutoConfigureMockMvc
@@ -34,5 +32,4 @@ public class HomePageTest {
 		mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 	}
-
 }
