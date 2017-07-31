@@ -12,7 +12,7 @@
       <p th:text="${greeting}">Hello, World!</p>
     </blockquote>
 
-    <a class="btn btn-primary" role="button" th:href="${(#mvc.url('GC#list')).build()}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a>
+    <a class="btn btn-primary" role="button" th:href="@{/greeting}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</a>
   </div>
 </body>
 </html>
