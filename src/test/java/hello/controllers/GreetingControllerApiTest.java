@@ -67,7 +67,6 @@ public class GreetingControllerApiTest {
 
 	@Before
 	public void setup() {
-
 		MockitoAnnotations.initMocks(this);
 		mvc = MockMvcBuilders.standaloneSetup(greetingController).apply(springSecurity(springSecurityFilterChain))
 				.setMessageConverters(MessageConverterUtil.getMessageConverters()).build();
