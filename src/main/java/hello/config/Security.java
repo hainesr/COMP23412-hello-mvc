@@ -13,7 +13,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 @EnableWebSecurity
 public class Security extends WebSecurityConfigurerAdapter {
 
-	private static final String ADMIN_ROLE = "ADMINISTRATOR";
+	public static final String ADMIN_ROLE = "ADMINISTRATOR";
 
 	// List the mappings/methods for which no authorisation is required.
 	// We specifically omit '/greeting/new' here so that we require log in
@@ -25,7 +25,7 @@ public class Security extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// By default, all requests are authenticated except our specific list.
-		http.authorizeRequests().requestMatchers(NO_AUTH).permitAll().anyRequest().authenticated();
+		http.authorizeRequests().requestMatchers(NO_AUTH).permitAll().anyRequest().hasRole(ADMIN_ROLE);
 
 		// Use form login/logout for the Web.
 		http.formLogin().loginPage("/sign-in").permitAll();

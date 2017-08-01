@@ -51,6 +51,8 @@ import hello.entities.Greeting;
 @ActiveProfiles("test")
 public class GreetingControllerTest {
 
+	private final static String BAD_ROLE = "USER";
+
 	private MockMvc mvc;
 
 	@Autowired
@@ -121,7 +123,8 @@ public class GreetingControllerTest {
 
 	@Test
 	public void getNewGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").with(user("Rob")).accept(MediaType.TEXT_HTML))
+		mvc.perform(MockMvcRequestBuilders.get("/greeting/new").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.accept(MediaType.TEXT_HTML))
 		.andExpect(status().isOk()).andExpect(view().name("greeting/new"))
 		.andExpect(handler().methodName("newGreeting"));
 	}
@@ -136,8 +139,17 @@ public class GreetingControllerTest {
 	}
 
 	@Test
+	public void postGreetingBadRole() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob").roles(BAD_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("template", "Howdy, %s!")
+				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isForbidden());
+
+		verify(greetingService, never()).save(greeting);
+	}
+
+	@Test
 	public void postGreetingNoCsrf() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob"))
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("template", "Howdy, %s!")
 				.accept(MediaType.TEXT_HTML)).andExpect(status().isForbidden());
 
@@ -148,7 +160,7 @@ public class GreetingControllerTest {
 	public void postGreeting() throws Exception {
 		ArgumentCaptor<Greeting> arg = ArgumentCaptor.forClass(Greeting.class);
 
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob"))
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML).with(csrf()))
 		.andExpect(status().isFound()).andExpect(content().string(""))
@@ -161,7 +173,7 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postBadGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob"))
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "no placeholder").accept(MediaType.TEXT_HTML).with(csrf()))
 		.andExpect(status().isOk())
@@ -174,7 +186,7 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postLongGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob"))
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "abcdefghij %s klmnopqrst uvwxyz").accept(MediaType.TEXT_HTML).with(csrf()))
 		.andExpect(status().isOk()).andExpect(view().name("greeting/new"))
@@ -186,7 +198,7 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postEmptyGreeting() throws Exception {
-		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob"))
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.param("template", "").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
 		.andExpect(view().name("greeting/new"))

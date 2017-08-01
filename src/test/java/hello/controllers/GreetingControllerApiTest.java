@@ -51,6 +51,8 @@ import hello.entities.Greeting;
 @ActiveProfiles("test")
 public class GreetingControllerApiTest {
 
+	private final static String BAD_ROLE = "USER";
+
 	private MockMvc mvc;
 
 	@Autowired
@@ -133,11 +135,21 @@ public class GreetingControllerApiTest {
 	}
 
 	@Test
+	public void postGreetingBadRole() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/api/greeting").with(user("Rob").roles(BAD_ROLE))
+				.contentType(MediaType.APPLICATION_JSON).content("{ \"template\": \"Howdy, %s!\" }")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
+
+		verify(greetingService, never()).save(greeting);
+	}
+
+	@Test
 	public void postGreeting() throws Exception {
 		ArgumentCaptor<Greeting> arg = ArgumentCaptor.forClass(Greeting.class);
 
 		mvc.perform(
-				MockMvcRequestBuilders.post("/api/greeting").with(user("Rob")).contentType(MediaType.APPLICATION_JSON)
+				MockMvcRequestBuilders.post("/api/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated()).andExpect(content().string(""))
 		.andExpect(header().string("Location", containsString("/api/greeting/")))
@@ -150,7 +162,8 @@ public class GreetingControllerApiTest {
 	@Test
 	public void postBadGreeting() throws Exception {
 		mvc.perform(
-				MockMvcRequestBuilders.post("/api/greeting").with(user("Rob")).contentType(MediaType.APPLICATION_JSON)
+				MockMvcRequestBuilders.post("/api/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"no placeholder\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
 		.andExpect(handler().methodName("createGreeting"));
@@ -161,7 +174,8 @@ public class GreetingControllerApiTest {
 	@Test
 	public void postLongGreeting() throws Exception {
 		mvc.perform(
-				MockMvcRequestBuilders.post("/api/greeting").with(user("Rob")).contentType(MediaType.APPLICATION_JSON)
+				MockMvcRequestBuilders.post("/api/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"abcdefghij %s klmnopqrst uvwxyz\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
 		.andExpect(handler().methodName("createGreeting"));
@@ -172,7 +186,8 @@ public class GreetingControllerApiTest {
 	@Test
 	public void postEmptyGreeting() throws Exception {
 		mvc.perform(
-				MockMvcRequestBuilders.post("/api/greeting").with(user("Rob")).contentType(MediaType.APPLICATION_JSON)
+				MockMvcRequestBuilders.post("/api/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"\" }").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
 		.andExpect(handler().methodName("createGreeting"));
