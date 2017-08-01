@@ -127,6 +127,24 @@ public class GreetingControllerTest {
 	}
 
 	@Test
+	public void postGreetingNoAuth() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
+		.andExpect(header().string("Location", endsWith("/sign-in")));
+
+		verify(greetingService, never()).save(greeting);
+	}
+
+	@Test
+	public void postGreetingNoCsrf() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/greeting").with(user("Rob"))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("template", "Howdy, %s!")
+				.accept(MediaType.TEXT_HTML)).andExpect(status().isForbidden());
+
+		verify(greetingService, never()).save(greeting);
+	}
+
+	@Test
 	public void postGreeting() throws Exception {
 		ArgumentCaptor<Greeting> arg = ArgumentCaptor.forClass(Greeting.class);
 
