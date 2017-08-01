@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -111,6 +112,25 @@ public class GreetingControllerApiTest {
 	public void getNewGreeting() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/api/greeting/new").accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotAcceptable()).andExpect(handler().methodName("newGreeting"));
+	}
+
+	@Test
+	public void postGreetingNoAuth() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.post("/api/greeting").contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isUnauthorized());
+
+		verify(greetingService, never()).save(greeting);
+	}
+
+	@Test
+	public void postGreetingBadAuth() throws Exception {
+		mvc.perform(
+				MockMvcRequestBuilders.post("/api/greeting").with(anonymous())
+				.contentType(MediaType.APPLICATION_JSON).content("{ \"template\": \"Howdy, %s!\" }")
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isUnauthorized());
+
+		verify(greetingService, never()).save(greeting);
 	}
 
 	@Test
