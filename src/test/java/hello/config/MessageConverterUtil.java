@@ -28,11 +28,11 @@ public class MessageConverterUtil implements InitializingBean {
 	private static HttpMessageConverter<?> converters[];
 
 	@Autowired
-	private RequestMappingHandlerAdapter adapter;
+	private RequestMappingHandlerAdapter[] adapters;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		List<HttpMessageConverter<?>> converterList = adapter.getMessageConverters();
+		List<HttpMessageConverter<?>> converterList = adapters[0].getMessageConverters();
 		converters = new HttpMessageConverter<?>[converterList.size()];
 		converterList.toArray(converters);
 		log.info("Initializing message converter list for unit testing");

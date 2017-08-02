@@ -104,8 +104,7 @@ public class GreetingControllerApiTest {
 
 		mvc.perform(MockMvcRequestBuilders.get("/api/greeting/{id}", id).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-		.andExpect(handler().methodName("greeting")).andExpect(jsonPath("$.id", equalTo(id)))
-		.andExpect(jsonPath("$.template", equalTo("%s")))
+		.andExpect(handler().methodName("greeting")).andExpect(jsonPath("$.template", equalTo("%s")))
 		.andExpect(jsonPath("$._links.self.href", endsWith("" + id)));
 	}
 
