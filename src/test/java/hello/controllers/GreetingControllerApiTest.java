@@ -1,5 +1,6 @@
 package hello.controllers;
 
+import static hello.config.MessageConverterUtil.getMessageConverters;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
@@ -39,7 +40,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import hello.Hello;
-import hello.config.MessageConverterUtil;
 import hello.config.Security;
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
@@ -71,7 +71,7 @@ public class GreetingControllerApiTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		mvc = MockMvcBuilders.standaloneSetup(greetingController).apply(springSecurity(springSecurityFilterChain))
-				.setMessageConverters(MessageConverterUtil.getMessageConverters()).build();
+				.setMessageConverters(getMessageConverters()).build();
 	}
 
 	@Test
