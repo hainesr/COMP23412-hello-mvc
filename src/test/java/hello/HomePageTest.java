@@ -26,4 +26,9 @@ public class HomePageTest {
 	public void getRoot() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.TEXT_HTML)).andExpect(status().isOk());
 	}
+
+	@Test
+	public void getApiRoot() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/api").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+	}
 }
