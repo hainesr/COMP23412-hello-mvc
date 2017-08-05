@@ -36,6 +36,14 @@
   </nav>
 
   <div class="container">
+    <div class="alert alert-success alert-dismissible" role="alert" th:if="${ok_message}">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>
+
+      <span th:text="${ok_message}">Success!</span>
+    </div>
+
     <div layout:fragment="content">
       Main page body goes here...
     </div>

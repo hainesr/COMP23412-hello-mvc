@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
@@ -56,7 +57,7 @@ public class GreetingController {
 
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public String createGreeting(@RequestBody @Valid @ModelAttribute Greeting greeting,
-			BindingResult errors, Model model) {
+			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
 
 		if (errors.hasErrors()) {
 			model.addAttribute("greeting", greeting);
@@ -64,6 +65,7 @@ public class GreetingController {
 		}
 
 		greetingService.save(greeting);
+		redirectAttrs.addFlashAttribute("ok_message", "New greeting added.");
 
 		return "redirect:/greeting";
 	}

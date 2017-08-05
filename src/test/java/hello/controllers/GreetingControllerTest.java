@@ -11,6 +11,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -165,7 +166,7 @@ public class GreetingControllerTest {
 				.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML).with(csrf()))
 		.andExpect(status().isFound()).andExpect(content().string(""))
 		.andExpect(view().name("redirect:/greeting")).andExpect(model().hasNoErrors())
-		.andExpect(handler().methodName("createGreeting"));
+		.andExpect(handler().methodName("createGreeting")).andExpect(flash().attributeExists("ok_message"));
 
 		verify(greetingService).save(arg.capture());
 		assertThat("Howdy, %s!", equalTo(arg.getValue().getTemplate()));
@@ -179,7 +180,7 @@ public class GreetingControllerTest {
 		.andExpect(status().isOk())
 		.andExpect(view().name("greeting/new"))
 		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
-		.andExpect(handler().methodName("createGreeting"));
+		.andExpect(handler().methodName("createGreeting")).andExpect(flash().attributeCount(0));
 
 		verify(greetingService, never()).save(greeting);
 	}
@@ -191,7 +192,7 @@ public class GreetingControllerTest {
 				.param("template", "abcdefghij %s klmnopqrst uvwxyz").accept(MediaType.TEXT_HTML).with(csrf()))
 		.andExpect(status().isOk()).andExpect(view().name("greeting/new"))
 		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
-		.andExpect(handler().methodName("createGreeting"));
+		.andExpect(handler().methodName("createGreeting")).andExpect(flash().attributeCount(0));
 
 		verify(greetingService, never()).save(greeting);
 	}
@@ -203,7 +204,7 @@ public class GreetingControllerTest {
 				.param("template", "").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
 		.andExpect(view().name("greeting/new"))
 		.andExpect(model().attributeHasFieldErrors("greeting", "template"))
-		.andExpect(handler().methodName("createGreeting"));
+		.andExpect(handler().methodName("createGreeting")).andExpect(flash().attributeCount(0));
 
 		verify(greetingService, never()).save(greeting);
 	}
