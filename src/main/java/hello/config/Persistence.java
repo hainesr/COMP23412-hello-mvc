@@ -12,7 +12,7 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 @Configuration
-public class DataLayer {
+public class Persistence {
 
 	private final static String PACKAGES = "hello.entities";
 
