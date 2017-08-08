@@ -1,7 +1,6 @@
 package hello.config;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -21,20 +20,21 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-@Profile("default")
-public class Persistence {
+@Profile("test")
+public class TestPersistence {
 
-	private final static Logger log = LoggerFactory.getLogger(Persistence.class);
+	private final static Logger log = LoggerFactory.getLogger(TestPersistence.class);
 
 	// Persistence objects.
 	private final static String PACKAGES = "hello.entities";
 
 	// Connection properties.
-	private final static Path DB_PATH = Paths.get(System.getProperty("user.dir"), "db", "hello-dev");
-	private final static String DB_OPTS = "DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
+	private final static String DB_PATH = "mem:hello-test";
+	private final static String DB_OPTS = "DB_CLOSE_DELAY=-1";
 
 	// Hibernate properties.
-	private final static boolean H2_SHOW_SQL = false;
+	private final static boolean H2_SHOW_SQL = true;
+	private final static String H2_HBM2DDL_AUTO = "create-drop";
 	private final static String H2_USERNAME = "h2";
 	private final static String H2_PASSWORD = "spring";
 
@@ -59,6 +59,7 @@ public class Persistence {
 		bean.setDataSource(dataSource());
 		bean.setJpaVendorAdapter(jpaVendorAdapter());
 		bean.setPackagesToScan(PACKAGES);
+		bean.setJpaProperties(hibernateProperties());
 		bean.afterPropertiesSet();
 
 		return bean.getObject();
@@ -85,5 +86,12 @@ public class Persistence {
 		transactionManager.setEntityManagerFactory(emf);
 
 		return transactionManager;
+	}
+
+	private Properties hibernateProperties() {
+		Properties properties = new Properties();
+		properties.setProperty("hibernate.hbm2ddl.auto", H2_HBM2DDL_AUTO);
+
+		return properties;
 	}
 }

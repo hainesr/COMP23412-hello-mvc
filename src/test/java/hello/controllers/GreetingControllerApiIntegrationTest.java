@@ -20,18 +20,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import hello.Hello;
 import hello.dao.GreetingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Hello.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration
-@Transactional
 @ActiveProfiles("test")
 public class GreetingControllerApiIntegrationTest {
 
@@ -99,6 +96,7 @@ public class GreetingControllerApiIntegrationTest {
 	}
 
 	@Test
+	@DirtiesContext
 	public void postGreeting() {
 		HttpHeaders postHeaders = new HttpHeaders();
 		postHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
