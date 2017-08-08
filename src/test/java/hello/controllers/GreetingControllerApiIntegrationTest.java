@@ -95,4 +95,82 @@ public class GreetingControllerApiIntegrationTest extends AbstractTransactionalJ
 		// Check one row is added to the database.
 		assertThat(currentRows + 1, equalTo(countRowsInTable("greeting")));
 	}
+
+	@Test
+	public void deleteGreetingNoUser() {
+		int currentRows = countRowsInTable("greeting");
+
+		client.delete().uri("/api/greetings/1").accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
+				.isUnauthorized();
+
+		// Check nothing is removed from the database.
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	public void deleteGreetingBadUser() {
+		int currentRows = countRowsInTable("greeting");
+
+		client.mutate().filter(basicAuthentication("Bad", "Person")).build().delete().uri("/api/greetings/1")
+				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isUnauthorized();
+
+		// Check nothing is removed from the database.
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	@DirtiesContext
+	public void deleteGreetingWithUser() {
+		int currentRows = countRowsInTable("greeting");
+
+		client.mutate().filter(basicAuthentication("Rob", "Haines")).build().delete().uri("/api/greetings/1")
+				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNoContent().expectBody().isEmpty();
+
+		// Check that one row is removed from the database.
+		assertThat(currentRows - 1, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	public void deleteGreetingNotFound() {
+		int currentRows = countRowsInTable("greeting");
+
+		client.mutate().filter(basicAuthentication("Rob", "Haines")).build().delete().uri("/api/greetings/99")
+				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNotFound().expectBody()
+				.jsonPath("$.error").value(containsString("greeting 99")).jsonPath("$.id").isEqualTo("99");
+
+		// Check nothing is removed from the database.
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	public void deleteAllGreetingsNoUser() {
+		int currentRows = countRowsInTable("greeting");
+
+		client.delete().uri("/api/greetings").accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
+				.isUnauthorized();
+
+		// Check nothing is removed from the database.
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	public void deleteAllGreetingsBadUser() {
+		int currentRows = countRowsInTable("greeting");
+
+		client.mutate().filter(basicAuthentication("Bad", "Person")).build().delete().uri("/api/greetings")
+				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isUnauthorized();
+
+		// Check nothing is removed from the database.
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	@DirtiesContext
+	public void deleteAllGreetingsWithUser() {
+		client.mutate().filter(basicAuthentication("Rob", "Haines")).build().delete().uri("/api/greetings")
+				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNoContent().expectBody().isEmpty();
+
+		// Check that all rows are removed from the database.
+		assertThat(0, equalTo(countRowsInTable("greeting")));
+	}
 }
