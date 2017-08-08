@@ -33,6 +33,7 @@ import hello.Hello;
 public class GreetingControllerIntegrationTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	private static Pattern CSRF = Pattern.compile("(?s).*name=\"_csrf\".*?value=\"([^\"]+).*");
+	private static String CSRF_HEADER = "X-CSRF-TOKEN";
 	private static String SESSION_KEY = "JSESSIONID";
 
 	@LocalServerPort
@@ -127,6 +128,75 @@ public class GreetingControllerIntegrationTest extends AbstractTransactionalJUni
 
 		// Check one row is added to the database.
 		assertThat(currentRows + 1, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	public void deleteGreetingNoUser() {
+		int currentRows = countRowsInTable("greeting");
+
+		// Should redirect to the sign-in page.
+		client.delete().uri("/greetings/1").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound()
+				.expectHeader().value("Location", containsString("/sign-in"));
+
+		// Check that nothing is removed from the database.
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	@DirtiesContext
+	public void deleteGreetingWithUser() {
+		int currentRows = countRowsInTable("greeting");
+		String[] tokens = login();
+
+		// The session ID cookie holds our login credentials.
+		// And for a DELETE we have no body, so we pass the CSRF token in the headers.
+		client.delete().uri("/greetings/1").accept(MediaType.TEXT_HTML).header(CSRF_HEADER, tokens[0])
+				.cookie(SESSION_KEY, tokens[1]).exchange().expectStatus().isFound().expectHeader()
+				.value("Location", endsWith("/greetings"));
+
+		// Check that one row is removed from the database.
+		assertThat(currentRows - 1, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	public void deleteGreetingNotFound() {
+		int currentRows = countRowsInTable("greeting");
+		String[] tokens = login();
+
+		// The session ID cookie holds our login credentials.
+		// And for a DELETE we have no body, so we pass the CSRF token in the headers.
+		client.delete().uri("/greetings/99").accept(MediaType.TEXT_HTML).header(CSRF_HEADER, tokens[0])
+				.cookie(SESSION_KEY, tokens[1]).exchange().expectStatus().isNotFound();
+
+		// Check nothing is removed from the database.
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	public void deleteAllGreetingsNoUser() {
+		int currentRows = countRowsInTable("greeting");
+
+		// Should redirect to the sign-in page.
+		client.delete().uri("/greetings").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound().expectHeader()
+				.value("Location", containsString("/sign-in"));
+
+		// Check that nothing is removed from the database.
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	@DirtiesContext
+	public void deleteAllGreetingsWithUser() {
+		String[] tokens = login();
+
+		// The session ID cookie holds our login credentials.
+		// And for a DELETE we have no body, so we pass the CSRF token in the headers.
+		client.delete().uri("/greetings").accept(MediaType.TEXT_HTML).header(CSRF_HEADER, tokens[0])
+				.cookie(SESSION_KEY, tokens[1]).exchange().expectStatus().isFound().expectHeader()
+				.value("Location", endsWith("/greetings"));
+
+		// Check that all rows are removed from the database.
+		assertThat(0, equalTo(countRowsInTable("greeting")));
 	}
 
 	private String[] login() {
