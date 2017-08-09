@@ -17,7 +17,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 
 	private final static Logger log = LoggerFactory.getLogger(InitialDataLoader.class);
 
-	private final static String GREETING = "Hello, %s!";
+	private final static String[] TEMPLATES = { "Hello, %s!", "Howdy, %s!" };
 
 	@Autowired
 	private GreetingService greetingService;
@@ -31,11 +31,12 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			return;
 		}
 
-		Greeting greeting = new Greeting();
-		greeting.setTemplate(GREETING);
+		for (String template : TEMPLATES) {
+			Greeting greeting = new Greeting();
+			greeting.setTemplate(template);
 
-		greetingService.save(greeting);
-
-		log.info("Added greeting (" + greeting.getId() + "): " + greeting.getTemplate());
+			greetingService.save(greeting);
+			log.info("Added greeting (" + greeting.getId() + "): " + greeting.getTemplate());
+		}
 	}
 }
