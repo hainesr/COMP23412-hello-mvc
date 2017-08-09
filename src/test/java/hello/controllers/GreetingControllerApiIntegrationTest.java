@@ -10,7 +10,6 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -22,15 +21,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import hello.Hello;
-import hello.dao.GreetingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Hello.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class GreetingControllerApiIntegrationTest {
+public class GreetingControllerApiIntegrationTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	@LocalServerPort
 	private int port;
@@ -46,9 +45,6 @@ public class GreetingControllerApiIntegrationTest {
 	private final TestRestTemplate anon = new TestRestTemplate();
 	private final TestRestTemplate evil = new TestRestTemplate("Bad", "Person");
 	private final TestRestTemplate user = new TestRestTemplate("Rob", "Haines");
-
-	@Autowired
-	private GreetingService greetingService;
 
 	@Before
 	public void setUp() throws MalformedURLException {
@@ -72,12 +68,10 @@ public class GreetingControllerApiIntegrationTest {
 		postHeaders.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> postEntity = new HttpEntity<String>("{ \"template\": \"Howdy, %s!\" }", postHeaders);
 
-		long before = greetingService.count();
 		ResponseEntity<String> response = anon.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
-		long after = greetingService.count();
 
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED));
-		assertThat(before, equalTo(after));
+		assertThat(2, equalTo(countRowsInTable("greeting")));
 	}
 
 	@Test
@@ -87,12 +81,10 @@ public class GreetingControllerApiIntegrationTest {
 		postHeaders.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> postEntity = new HttpEntity<String>("{ \"template\": \"Howdy, %s!\" }", postHeaders);
 
-		long before = greetingService.count();
 		ResponseEntity<String> response = evil.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
-		long after = greetingService.count();
 
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED));
-		assertThat(before, equalTo(after));
+		assertThat(2, equalTo(countRowsInTable("greeting")));
 	}
 
 	@Test
@@ -103,14 +95,12 @@ public class GreetingControllerApiIntegrationTest {
 		postHeaders.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> postEntity = new HttpEntity<String>("{ \"template\": \"Howdy, %s!\" }", postHeaders);
 
-		long before = greetingService.count();
 		ResponseEntity<String> response = user.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
-		long after = greetingService.count();
 
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.CREATED));
 		assertThat(response.getHeaders().getLocation().toString(), containsString(baseUrl));
 		assertThat(response.getBody(), equalTo(null));
-		assertThat((before + 1), equalTo(after));
+		assertThat(3, equalTo(countRowsInTable("greeting")));
 	}
 
 	private void get(String url, String expectedBody) {

@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -26,17 +25,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import hello.Hello;
-import hello.dao.GreetingService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Hello.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class GreetingControllerIntegrationTest {
+public class GreetingControllerIntegrationTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	@LocalServerPort
 	private int port;
@@ -56,9 +55,6 @@ public class GreetingControllerIntegrationTest {
 
 	// An anonymous and stateless log in.
 	private final TestRestTemplate anon = new TestRestTemplate();
-
-	@Autowired
-	private GreetingService greetingService;
 
 	@Before
 	public void setUp() throws MalformedURLException {
@@ -179,12 +175,10 @@ public class GreetingControllerIntegrationTest {
 		HttpEntity<MultiValueMap<String, String>> postEntity = new HttpEntity<MultiValueMap<String, String>>(form,
 				postHeaders);
 
-		long before = greetingService.count();
 		ResponseEntity<String> response = anon.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
-		long after = greetingService.count();
 
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.FORBIDDEN));
-		assertThat(before, equalTo(after));
+		assertThat(2, equalTo(countRowsInTable("greeting")));
 	}
 
 	@Test
@@ -234,14 +228,12 @@ public class GreetingControllerIntegrationTest {
 		postEntity = new HttpEntity<MultiValueMap<String, String>>(form, postHeaders);
 
 		// POST the new greeting.
-		long before = greetingService.count();
 		ResponseEntity<String> response = stateful.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
-		long after = greetingService.count();
 
 		// Did it work?
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.FOUND));
 		assertThat(response.getHeaders().getLocation().toString(), containsString(baseUrl));
-		assertThat((before + 1), equalTo(after));
+		assertThat(3, equalTo(countRowsInTable("greeting")));
 	}
 
 	private void get(String url, String expectedBody) {
