@@ -28,6 +28,7 @@ import hello.Hello;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Hello.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext
 @ActiveProfiles("test")
 public class GreetingControllerApiIntegrationTest extends AbstractTransactionalJUnit4SpringContextTests {
 
