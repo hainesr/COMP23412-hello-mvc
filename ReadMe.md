@@ -1,5 +1,5 @@
 # Hello MVC - Example Web Application
-## COMP23420 Software Engineering, University of Manchester, UK
+## COMP23412 Software Engineering, University of Manchester, UK
 ### Robert Haines, Markel Vigo, Caroline Jay
 
 *This is the skeleton lab code for the individual exercise in week 1.*
