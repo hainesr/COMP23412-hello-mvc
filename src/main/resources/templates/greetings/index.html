@@ -1,6 +1,8 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layouts/default}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/default}">
 <head>
   <title>All</title>
 </head>
@@ -29,7 +31,7 @@
             </th:block>
           </td>
           <td>
-            <form th:action="${(#mvc.url('GC#deleteGreeting').arg(0, g.id)).build()}" th:method="delete">
+            <form th:action="${(#mvc.url('GC#deleteGreeting').arg(0, g.id)).build()}" th:method="delete" sec:authorize="isAuthenticated()">
               <button type="submit" class="btn btn-danger btn-sm">Delete</button>
             </form>
           </td>
@@ -39,7 +41,7 @@
 
     <form th:action="${(#mvc.url('GC#deleteAllGreetings')).build()}" th:method="delete">
       <a class="btn btn-primary" role="button" href="/greetings/new"><i class="fa-solid fa-plus" aria-hidden="true"></i> Add a new greeting</a>
-      <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> Delete All</button>
+      <button type="submit" class="btn btn-danger" sec:authorize="isAuthenticated()"><i class="fa-solid fa-trash" aria-hidden="true"></i> Delete All</button>
     </form>
   </div>
 </body>
