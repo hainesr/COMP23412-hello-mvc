@@ -1,6 +1,8 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layouts/default}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/default}">
 <head>
   <title>A greeting</title>
 </head>
@@ -14,7 +16,7 @@
 
     <form th:action="@{/greetings/{num}(num=${id})}" th:method="delete">
       <a class="btn btn-primary" role="button" th:href="@{/greetings}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back</a>
-      <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> Delete</button>
+      <button type="submit" class="btn btn-danger" sec:authorize="isAuthenticated()"><i class="fa-solid fa-trash" aria-hidden="true"></i> Delete</button>
     </form>
   </div>
 </body>
