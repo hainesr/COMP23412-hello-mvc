@@ -86,15 +86,17 @@ public class GreetingController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String deleteGreeting(@PathVariable("id") long id) {
+	public String deleteGreeting(@PathVariable("id") long id, RedirectAttributes redirectAttrs) {
 		greetingService.deleteById(id);
+		redirectAttrs.addFlashAttribute("ok_message", "Greeting deleted.");
 
 		return "redirect:/greetings";
 	}
 
 	@DeleteMapping
-	public String deleteAllGreetings() {
+	public String deleteAllGreetings(RedirectAttributes redirectAttrs) {
 		greetingService.deleteAll();
+		redirectAttrs.addFlashAttribute("ok_message", "All greetings deleted.");
 
 		return "redirect:/greetings";
 	}
