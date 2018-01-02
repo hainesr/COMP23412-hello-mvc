@@ -1,4 +1,4 @@
-# Eclipse launchers for Hello MVC
+# Eclipse launchers for COMP23412 Hello MVC
 
 ## Synopsis
 

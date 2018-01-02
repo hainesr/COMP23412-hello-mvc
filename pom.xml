@@ -3,9 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>uk.ac.man.cs</groupId>
-  <artifactId>hello-mvc</artifactId>
-  <version>0.0.1</version>
-  <name>Hello MVC</name>
+  <artifactId>comp23412-hello-mvc</artifactId>
+  <version>0.1.0</version>
+  <name>COMP23412 Hello MVC</name>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
