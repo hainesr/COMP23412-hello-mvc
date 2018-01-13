@@ -175,16 +175,18 @@ public class GreetingControllerApiTest {
 
 	@Test
 	public void deleteGreeting() throws Exception {
-		mvc.perform(delete("/api/greetings/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent())
-				.andExpect(content().string("")).andExpect(handler().methodName("deleteGreeting"));
+		mvc.perform(delete("/api/greetings/1").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent()).andExpect(content().string(""))
+				.andExpect(handler().methodName("deleteGreeting"));
 
 		verify(greetingService).deleteById(1);
 	}
 
 	@Test
 	public void deleteAllGreetings() throws Exception {
-		mvc.perform(delete("/api/greetings").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent())
-				.andExpect(content().string("")).andExpect(handler().methodName("deleteAllGreetings"));
+		mvc.perform(delete("/api/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent()).andExpect(content().string(""))
+				.andExpect(handler().methodName("deleteAllGreetings"));
 
 		verify(greetingService).deleteAll();
 	}
