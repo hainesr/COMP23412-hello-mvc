@@ -29,8 +29,7 @@ public class Security {
 	// log in before submitting the new greeting.
 	private static final RequestMatcher[] NO_AUTH = { antMatcher(HttpMethod.GET, "/webjars/**"),
 			antMatcher(HttpMethod.GET, "/"), antMatcher(HttpMethod.GET, "/api/**"),
-			antMatcher(HttpMethod.GET, "/greetings"), antMatcher(HttpMethod.GET, "/greetings/{id:[\\d]+}"),
-			antMatcher(HttpMethod.DELETE, "/**") };
+			antMatcher(HttpMethod.GET, "/greetings"), antMatcher(HttpMethod.GET, "/greetings/{id:[\\d]+}") };
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
