@@ -20,11 +20,11 @@
         <tr th:each="g : ${greetings}">
           <td th:text="${g.id}">1</td>
           <td>
-            <a th:href="${(#mvc.url('GC#greeting').arg(0, g.id)).build()}" th:text="${g.template}">Hello, %s!</a>
+            <a th:href="@{/greeting/{num}(num=${g.id})}" th:text="${g.template}">Hello, %s!</a>
           </td>
           <td>
             <th:block th:each="n, state : ${names}">
-              <a th:href="${(#mvc.url('GC#greeting').arg(0, g.id).arg(1, n)).build()}" th:text="${n}">Rob</a><th:block th:if="!${state.last}">, </th:block>
+              <a th:href="@{/greeting/{num}(num=${g.id},name=${n})}" th:text="${n}">Rob</a><th:block th:if="!${state.last}">, </th:block>
             </th:block>
           </td>
         </tr>
