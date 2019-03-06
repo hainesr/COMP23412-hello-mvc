@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
-import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 import org.springframework.hateoas.RelProvider;
 import org.springframework.hateoas.core.EvoInflectorRelProvider;
 
@@ -25,7 +24,7 @@ public class Hateoas {
 	@Bean
 	public RepositoryRestConfigurer repositoryRestConfigurer() {
 
-		return new RepositoryRestConfigurerAdapter() {
+		return new RepositoryRestConfigurer() {
 
 			@Override
 			public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
