@@ -1,5 +1,7 @@
 package hello.dao;
 
+import java.util.Optional;
+
 import hello.entities.Greeting;
 
 public interface GreetingService {
@@ -10,9 +12,11 @@ public interface GreetingService {
 
 	public Iterable<Greeting> findAll();
 
+	public Optional<Greeting> findById(long id);
+
 	public Greeting findOne(long id);
 
-	public void delete(long id);
+	public void deleteById(long id);
 
 	public void deleteAll();
 }
