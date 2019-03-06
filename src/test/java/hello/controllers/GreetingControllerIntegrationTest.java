@@ -178,7 +178,8 @@ public class GreetingControllerIntegrationTest extends AbstractTransactionalJUni
 
 		ResponseEntity<String> response = anon.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
 
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.FORBIDDEN));
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.FOUND));
+		assertThat(response.getHeaders().getLocation().toString(), equalTo(loginUrl));
 		assertThat(2, equalTo(countRowsInTable("greeting")));
 	}
 
