@@ -1,5 +1,6 @@
 package hello.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,11 +22,13 @@ public class Security extends WebSecurityConfigurerAdapter {
 	public static final String ADMIN_ROLE = "ADMINISTRATOR";
 
 	// List the mappings/methods for which no authorisation is required.
-	// We specifically omit '/greeting/new' here so that we require log in
-	// before submitting the new greeting.
-	private static final RequestMatcher[] NO_AUTH = { new AntPathRequestMatcher("/", "GET"),
-			new AntPathRequestMatcher("/api/**", "GET"), new AntPathRequestMatcher("/greeting", "GET"),
-			new AntPathRequestMatcher("/greeting/{id:[\\d]+}", "GET"), new AntPathRequestMatcher("/**", "DELETE") };
+	// This includes the paths where static resources, such as bootstrap, are
+	// located. We also specifically omit '/greeting/new' here so that we require
+	// log in before submitting the new greeting.
+	private static final RequestMatcher[] NO_AUTH = { PathRequest.toStaticResources().atCommonLocations(),
+			new AntPathRequestMatcher("/", "GET"), new AntPathRequestMatcher("/api/**", "GET"),
+			new AntPathRequestMatcher("/greeting", "GET"), new AntPathRequestMatcher("/greeting/{id:[\\d]+}", "GET"),
+			new AntPathRequestMatcher("/**", "DELETE") };
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
