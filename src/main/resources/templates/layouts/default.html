@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="/webjars/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/webjars/font-awesome/css/all.min.css" />
 </head>
 <body>
   <nav class="navbar navbar-inverse navbar-static-top">
@@ -24,20 +24,20 @@
           <li><a th:href="@{/greeting}">Greetings</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right" sec:authorize="!isAuthenticated()">
-          <li><p class="navbar-text"><i class="fa fa-user" aria-hidden="true"></i> Not signed in</p></li>
+          <li><p class="navbar-text"><i class="fas fa-user" aria-hidden="true"></i> Not signed in</p></li>
           <li>
             <div>
               <a class="btn btn-default navbar-btn" role="button" th:href="@{/sign-in}">
-                <i class="fa fa-sign-in" aria-hidden="true"></i> Sign in
+                <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign in
               </a>
             </div>
           </li>
         </ul>
         <ul class="nav navbar-nav navbar-right" sec:authorize="isAuthenticated()">
-          <li><p class="navbar-text"><i class="fa fa-user" aria-hidden="true"></i> Signed in as <span sec:authentication="name"></span></p></li>
+          <li><p class="navbar-text"><i class="fas fa-user" aria-hidden="true"></i> Signed in as <span sec:authentication="name"></span></p></li>
           <li>
             <form class="navbar-form" th:action="@{/sign-out}" method="post">
-              <button type="submit" class="btn btn-warning"><i class="fa fa-sign-out" aria-hidden="true"></i> Sign out</button>
+              <button type="submit" class="btn btn-warning"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign out</button>
             </form>
           </li>
         </ul>
@@ -48,7 +48,7 @@
   <div class="container">
     <div class="alert alert-success alert-dismissible" role="alert" th:if="${ok_message}">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <i class="fa fa-times" aria-hidden="true"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
 
       <span th:text="${ok_message}">Success!</span>
