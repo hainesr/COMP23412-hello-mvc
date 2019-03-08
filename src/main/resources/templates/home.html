@@ -8,15 +8,18 @@
 <body>
   <div layout:fragment="content">
     <div class="jumbotron">
-      <h1>Spring MVC Example Application</h1>
+      <h1 class="display-4">Spring MVC Example Application</h1>
 
-      <p>Test various elements of MVC development in Java using:</p>
+      <p class="lead">Test various elements of MVC development in Java.</p>
+      <hr class="my-4">
+      <p>This application uses:</p>
       <ul>
-        <li><a href="http://projects.spring.io/spring-framework/">The Spring Framework</a>.</li>
-        <li><a href="http://projects.spring.io/spring-security/">Spring Security</a>.</li>
-        <li><a href="http://www.thymeleaf.org/">Thymeleaf</a> templates and layouts.</li>
+        <li><a href="https://spring.io/projects/spring-boot/">Spring Boot 2</a>.</li>
+        <li><a href="https://spring.io/projects/spring-framework/">The Spring Framework v5</a>.</li>
+        <li><a href="https://spring.io/projects/spring-security/">Spring Security v5</a>.</li>
+        <li><a href="https://www.thymeleaf.org/">Thymeleaf</a> templates and layouts.</li>
       </ul>
-      <p>Try out the <a th:href="@{/greeting}">Greetings</a> page.</p>
+      <p class="lead">Try out the <a th:href="@{/greeting}">Greetings</a> page.</p>
     </div>
   </div>
 </body>

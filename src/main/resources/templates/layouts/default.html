@@ -5,47 +5,38 @@
 <head>
   <title layout:title-pattern="$LAYOUT_TITLE: $CONTENT_TITLE">Greetings</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css" />
   <link rel="stylesheet" href="/webjars/font-awesome/css/all.min.css" />
 </head>
 <body>
-  <nav class="navbar navbar-inverse navbar-static-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#hello-navbar-collapse" aria-expanded="false">
-          <span class="sr-only">Toggle navigation</span>
-        </button>
-        <a class="navbar-brand" th:href="@{/}">Hello MVC</a>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" th:href="@{/}">Hello MVC</a>
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#hello-navbar-collapse" aria-expanded="false">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+      
+    <div class="collapse navbar-collapse" id="hello-navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item"><a class="nav-link" th:href="@{/greeting}">Greetings</a></li>
+      </ul>
+      <div class="navbar-text" sec:authorize="!isAuthenticated()">
+      	<i class="fas fa-user" aria-hidden="true"></i> Not signed in |
+      	<a class="btn btn-primary navbar-btn" role="button" th:href="@{/sign-in}">
+          <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign in
+        </a>
       </div>
-
-      <div class="collapse navbar-collapse" id="hello-navbar-collapse">
-        <ul class="nav navbar-nav">
-          <li><a th:href="@{/greeting}">Greetings</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right" sec:authorize="!isAuthenticated()">
-          <li><p class="navbar-text"><i class="fas fa-user" aria-hidden="true"></i> Not signed in</p></li>
-          <li>
-            <div>
-              <a class="btn btn-default navbar-btn" role="button" th:href="@{/sign-in}">
-                <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign in
-              </a>
-            </div>
-          </li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right" sec:authorize="isAuthenticated()">
-          <li><p class="navbar-text"><i class="fas fa-user" aria-hidden="true"></i> Signed in as <span sec:authentication="name"></span></p></li>
-          <li>
-            <form class="navbar-form" th:action="@{/sign-out}" method="post">
-              <button type="submit" class="btn btn-warning"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign out</button>
-            </form>
-          </li>
-        </ul>
-      </div>
+      <form class="form-inline" th:action="@{/sign-out}" method="post" sec:authorize="isAuthenticated()">
+        <div class="navbar-text">
+          <i class="fas fa-user" aria-hidden="true"></i> Signed in as <span sec:authentication="name"></span> |
+        </div>&nbsp;
+        <button type="submit" class="btn btn-warning navbar-btn"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign out</button>
+      </form>
     </div>
   </nav>
 
-  <div class="container">
+  <div class="container mt-lg-5">
     <div class="alert alert-success alert-dismissible" role="alert" th:if="${ok_message}">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <i class="fas fa-times" aria-hidden="true"></i>
@@ -60,6 +51,7 @@
   </div>
 
   <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/webjars/popper.js/umd/popper.min.js"></script>
   <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
