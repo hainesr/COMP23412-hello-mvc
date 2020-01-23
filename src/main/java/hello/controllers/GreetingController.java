@@ -22,7 +22,7 @@ import hello.entities.Greeting;
 @RequestMapping(value = "/greeting", produces = MediaType.TEXT_HTML_VALUE)
 public class GreetingController {
 
-	private static final String[] NAMES = { "Rob", "Caroline", "Markel" };
+	private static final String[] NAMES = { "Rob", "Caroline", "Markel", "Mustafa" };
 
 	@Autowired
 	private GreetingService greetingService;
