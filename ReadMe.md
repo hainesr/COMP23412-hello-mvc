@@ -8,4 +8,4 @@ See the instructions in Blackboard for more details.
 
 #### Licence
 
-BSD licenced, see Licence.md.
+BSD licenced. See Licence.md.
