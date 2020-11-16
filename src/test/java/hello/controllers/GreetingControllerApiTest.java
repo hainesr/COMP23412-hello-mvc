@@ -1,6 +1,5 @@
 package hello.controllers;
 
-import static hello.config.MessageConverterUtil.getMessageConverters;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
@@ -10,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -19,60 +17,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collections;
 
-import javax.servlet.Filter;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import hello.Hello;
 import hello.config.Security;
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = Hello.class)
-@AutoConfigureMockMvc
-@DirtiesContext
-@ActiveProfiles("test")
+@WebMvcTest(GreetingControllerApi.class)
+@Import(Security.class)
 public class GreetingControllerApiTest {
 
 	private final static String BAD_ROLE = "USER";
 
+	@Autowired
 	private MockMvc mvc;
 
-	@Autowired
-	private Filter springSecurityFilterChain;
+	@MockBean
+	private GreetingService greetingService;
 
 	@Mock
 	private Greeting greeting;
-
-	@Mock
-	private GreetingService greetingService;
-
-	@InjectMocks
-	private GreetingControllerApi greetingController;
-
-	@BeforeEach
-	public void setup() {
-		MockitoAnnotations.initMocks(this);
-		mvc = MockMvcBuilders.standaloneSetup(greetingController).apply(springSecurity(springSecurityFilterChain))
-				.setMessageConverters(getMessageConverters()).build();
-	}
 
 	@Test
 	public void getEmptyGreetingsList() throws Exception {
