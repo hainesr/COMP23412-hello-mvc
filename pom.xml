@@ -4,13 +4,13 @@
 
   <groupId>uk.ac.man.cs</groupId>
   <artifactId>comp23412-hello-mvc</artifactId>
-  <version>2.0.0</version>
+  <version>3.0.0</version>
   <name>COMP23412 Hello MVC</name>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.1.18.RELEASE</version>
+    <version>2.3.8.RELEASE</version>
   </parent>
 
   <dependencies>
@@ -61,6 +61,10 @@
           <groupId>junit</groupId>
           <artifactId>junit</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.junit.vintage</groupId>
+          <artifactId>junit-vintage-engine</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -74,11 +78,6 @@
     <dependency>
 	<groupId>org.springframework.boot</groupId>
 	<artifactId>spring-boot-starter-hateoas</artifactId>
-    </dependency>
-    <dependency>
-    	<groupId>org.atteo</groupId>
-    	<artifactId>evo-inflector</artifactId>
-    	<version>1.2.2</version>
     </dependency>
     <dependency>
     	<groupId>org.springframework.boot</groupId>
@@ -107,16 +106,20 @@
     	<artifactId>webjars-locator-core</artifactId>
     </dependency>
     <dependency>
-    	<groupId>org.junit.platform</groupId>
-    	<artifactId>junit-platform-surefire-provider</artifactId>
-    </dependency>
-    <dependency>
     	<groupId>org.junit.jupiter</groupId>
     	<artifactId>junit-jupiter-api</artifactId>
     </dependency>
     <dependency>
     	<groupId>org.junit.jupiter</groupId>
     	<artifactId>junit-jupiter-engine</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>javax.validation</groupId>
+    	<artifactId>validation-api</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>org.hibernate.validator</groupId>
+    	<artifactId>hibernate-validator</artifactId>
     </dependency>
   </dependencies>
 

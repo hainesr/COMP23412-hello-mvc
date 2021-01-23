@@ -56,8 +56,8 @@ public class GreetingController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public String createGreeting(@RequestBody @Valid @ModelAttribute Greeting greeting,
-			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
+	public String createGreeting(@RequestBody @Valid @ModelAttribute Greeting greeting, BindingResult errors,
+			Model model, RedirectAttributes redirectAttrs) {
 
 		if (errors.hasErrors()) {
 			model.addAttribute("greeting", greeting);

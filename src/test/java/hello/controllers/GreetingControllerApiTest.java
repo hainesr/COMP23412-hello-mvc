@@ -78,7 +78,7 @@ public class GreetingControllerApiTest {
 		when(greetingService.findOne(id)).thenReturn(g);
 
 		mvc.perform(get("/api/greeting/{id}", id).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(handler().methodName("greeting")).andExpect(jsonPath("$.template", equalTo("%s")))
 				.andExpect(jsonPath("$._links.self.href", endsWith("" + id)));
 	}

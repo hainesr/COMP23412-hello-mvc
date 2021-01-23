@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
-import org.springframework.hateoas.RelProvider;
-import org.springframework.hateoas.core.EvoInflectorRelProvider;
+import org.springframework.hateoas.server.LinkRelationProvider;
+import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
 
 @Configuration
 public class Hateoas {
@@ -15,10 +15,10 @@ public class Hateoas {
 	private final static Logger log = LoggerFactory.getLogger(Hateoas.class);
 
 	@Bean
-	public RelProvider relProvider() {
-		log.info("Using EvoInflectorRelProvider for HATEOAS relations");
+	public LinkRelationProvider relProvider() {
+		log.info("Using EvoInflectorLinkRelationProvider for HATEOAS relations");
 
-		return new EvoInflectorRelProvider();
+		return new EvoInflectorLinkRelationProvider();
 	}
 
 	@Bean

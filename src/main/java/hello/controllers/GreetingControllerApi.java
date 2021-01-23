@@ -1,19 +1,17 @@
 package hello.controllers;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,12 +33,12 @@ public class GreetingControllerApi {
 	private GreetingService greetingService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public Resources<Resource<Greeting>> list() {
+	public CollectionModel<Greeting> list() {
 		return greetingToResource(greetingService.findAll());
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public Resource<Greeting> greeting(@PathVariable("id") long id) {
+	public EntityModel<Greeting> greeting(@PathVariable("id") long id) {
 		Greeting greeting = greetingService.findOne(id);
 
 		return greetingToResource(greeting);
@@ -64,20 +62,15 @@ public class GreetingControllerApi {
 		return ResponseEntity.created(location).build();
 	}
 
-	private Resource<Greeting> greetingToResource(Greeting greeting) {
+	private EntityModel<Greeting> greetingToResource(Greeting greeting) {
 		Link selfLink = linkTo(GreetingControllerApi.class).slash(greeting.getId()).withSelfRel();
 
-		return new Resource<Greeting>(greeting, selfLink);
+		return EntityModel.of(greeting, selfLink);
 	}
 
-	private Resources<Resource<Greeting>> greetingToResource(Iterable<Greeting> greetings) {
+	private CollectionModel<Greeting> greetingToResource(Iterable<Greeting> greetings) {
 		Link selfLink = linkTo(methodOn(GreetingControllerApi.class).list()).withSelfRel();
 
-		List<Resource<Greeting>> resources = new ArrayList<Resource<Greeting>>();
-		for (Greeting greeting : greetings) {
-			resources.add(greetingToResource(greeting));
-		}
-
-		return new Resources<Resource<Greeting>>(resources, selfLink);
+		return CollectionModel.of(greetings, selfLink);
 	}
 }

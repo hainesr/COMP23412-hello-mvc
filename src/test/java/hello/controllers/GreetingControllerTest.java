@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -61,7 +61,7 @@ public class GreetingControllerTest {
 		mvc.perform(get("/greeting").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 				.andExpect(view().name("greeting/index")).andExpect(handler().methodName("list"));
 
-		verifyZeroInteractions(greeting);
+		verifyNoInteractions(greeting);
 	}
 
 	@Test
