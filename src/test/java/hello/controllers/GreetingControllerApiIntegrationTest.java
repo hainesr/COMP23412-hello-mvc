@@ -3,26 +3,22 @@ package hello.controllers;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.hamcrest.core.StringEndsWith.endsWith;
+import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
 
 import java.net.MalformedURLException;
-import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import hello.Hello;
 
@@ -35,79 +31,61 @@ public class GreetingControllerApiIntegrationTest extends AbstractTransactionalJ
 	@LocalServerPort
 	private int port;
 
-	private String baseUrl;
-	private String greetingUrl;
+	private int currentRows;
 
-	private static final String INDEX = "/1";
-
-	private HttpEntity<String> httpEntity;
-
-	// An anonymous log in and a couple of users for basic auth.
-	private final TestRestTemplate anon = new TestRestTemplate();
-	private final TestRestTemplate evil = new TestRestTemplate("Bad", "Person");
-	private final TestRestTemplate user = new TestRestTemplate("Rob", "Haines");
+	private WebTestClient client;
 
 	@BeforeEach
 	public void setUp() throws MalformedURLException {
-		this.baseUrl = "http://localhost:" + port + "/api/greeting";
-		this.greetingUrl = baseUrl + INDEX;
+		currentRows = countRowsInTable("greeting");
+		client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
+	}
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-		httpEntity = new HttpEntity<String>(headers);
+	@Test
+	public void getGreetingsList() {
+		client.get().uri("/api/greeting").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
+				.expectHeader().contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$.length()")
+				.isEqualTo(currentRows);
 	}
 
 	@Test
 	public void getGreeting() {
-		get(greetingUrl, "Hello, %s!");
+		client.get().uri("/api/greeting/1").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
+				.expectHeader().contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$.template")
+				.isEqualTo("Hello, %s!").jsonPath("$._links.self.href").value(endsWith("/1"));
 	}
 
 	@Test
-	public void postGreetingNoAuth() {
-		HttpHeaders postHeaders = new HttpHeaders();
-		postHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-		postHeaders.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> postEntity = new HttpEntity<String>("{ \"template\": \"Howdy, %s!\" }", postHeaders);
+	public void postGreetingNoUser() {
+		// Attempt to POST a valid greeting.
+		client.post().uri("/api/greeting").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.bodyValue("{ \"template\": \"Howdy, %s!\" }").exchange().expectStatus().isUnauthorized();
 
-		ResponseEntity<String> response = anon.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
-
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED));
-		assertThat(2, equalTo(countRowsInTable("greeting")));
+		// Check nothing added to the database.
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
 	}
 
 	@Test
-	public void postGreetingBadAuth() {
-		HttpHeaders postHeaders = new HttpHeaders();
-		postHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-		postHeaders.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> postEntity = new HttpEntity<String>("{ \"template\": \"Howdy, %s!\" }", postHeaders);
+	public void postGreetingBadUser() {
+		// Attempt to POST a valid greeting.
+		client.mutate().filter(basicAuthentication("Bad", "Person")).build().post().uri("/api/greeting")
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.bodyValue("{ \"template\": \"Howdy, %s!\" }").exchange().expectStatus().isUnauthorized();
 
-		ResponseEntity<String> response = evil.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
-
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.UNAUTHORIZED));
-		assertThat(2, equalTo(countRowsInTable("greeting")));
+		// Check nothing added to the database.
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
 	}
 
 	@Test
 	@DirtiesContext
-	public void postGreeting() {
-		HttpHeaders postHeaders = new HttpHeaders();
-		postHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-		postHeaders.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> postEntity = new HttpEntity<String>("{ \"template\": \"Howdy, %s!\" }", postHeaders);
+	public void postGreetingWithUser() {
+		// Attempt to POST a valid greeting.
+		client.mutate().filter(basicAuthentication("Rob", "Haines")).build().post().uri("/api/greeting")
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.bodyValue("{ \"template\": \"Howdy, %s!\" }").exchange().expectStatus().isCreated().expectHeader()
+				.value("Location", containsString("/api/greeting")).expectBody().isEmpty();
 
-		ResponseEntity<String> response = user.exchange(baseUrl, HttpMethod.POST, postEntity, String.class);
-
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.CREATED));
-		assertThat(response.getHeaders().getLocation().toString(), containsString(baseUrl));
-		assertThat(response.getBody(), equalTo(null));
-		assertThat(3, equalTo(countRowsInTable("greeting")));
-	}
-
-	private void get(String url, String expectedBody) {
-		ResponseEntity<String> response = anon.exchange(url, HttpMethod.GET, httpEntity, String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-		assertThat(response.getHeaders().getContentType().toString(), containsString(MediaType.APPLICATION_JSON_VALUE));
-		assertThat(response.getBody(), containsString(expectedBody));
+		// Check one row is added to the database.
+		assertThat(currentRows + 1, equalTo(countRowsInTable("greeting")));
 	}
 }
