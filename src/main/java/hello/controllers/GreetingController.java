@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
+import hello.exceptions.GreetingNotFoundException;
 
 @Controller
 @RequestMapping(value = "/greetings", produces = MediaType.TEXT_HTML_VALUE)
@@ -41,7 +42,8 @@ public class GreetingController {
 	public String greeting(@PathVariable("id") long id,
 			@RequestParam(value = "name", required = false, defaultValue = "World") String name, Model model) {
 
-		Greeting greeting = greetingService.findOne(id);
+		Greeting greeting = greetingService.findById(id).orElseThrow(() -> new GreetingNotFoundException(id));
+
 		model.addAttribute("greeting", greeting.getGreeting(name));
 
 		return "greetings/show";

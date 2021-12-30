@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,7 +78,7 @@ public class GreetingControllerTest {
 
 	@Test
 	public void getGreeting() throws Exception {
-		when(greetingService.findOne(1)).thenReturn(greeting);
+		when(greetingService.findById(1)).thenReturn(Optional.of(greeting));
 
 		mvc.perform(get("/greetings/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 				.andExpect(view().name("greetings/show")).andExpect(handler().methodName("greeting"));
@@ -87,7 +88,7 @@ public class GreetingControllerTest {
 
 	@Test
 	public void getGreetingName() throws Exception {
-		when(greetingService.findOne(1)).thenReturn(greeting);
+		when(greetingService.findById(1)).thenReturn(Optional.of(greeting));
 
 		mvc.perform(get("/greetings/1?name=Rob").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 				.andExpect(view().name("greetings/show")).andExpect(handler().methodName("greeting"));

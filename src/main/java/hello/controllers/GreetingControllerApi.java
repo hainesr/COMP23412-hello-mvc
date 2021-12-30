@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
+import hello.exceptions.GreetingNotFoundException;
 
 @RestController
 @RequestMapping(value = "/api/greetings", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
@@ -40,7 +41,7 @@ public class GreetingControllerApi {
 
 	@GetMapping("/{id}")
 	public EntityModel<Greeting> greeting(@PathVariable("id") long id) {
-		Greeting greeting = greetingService.findOne(id);
+		Greeting greeting = greetingService.findById(id).orElseThrow(() -> new GreetingNotFoundException(id));
 
 		return greetingToResource(greeting);
 	}

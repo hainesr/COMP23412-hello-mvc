@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -75,7 +76,7 @@ public class GreetingControllerApiTest {
 	public void getGreeting() throws Exception {
 		int id = 0;
 		Greeting g = new Greeting("%s");
-		when(greetingService.findOne(id)).thenReturn(g);
+		when(greetingService.findById(id)).thenReturn(Optional.of(g));
 
 		mvc.perform(get("/api/greetings/{id}", id).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
