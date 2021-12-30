@@ -85,6 +85,16 @@ public class GreetingControllerApiTest {
 	}
 
 	@Test
+	public void getGreetingNotFound() throws Exception {
+		int id = 1;
+		when(greetingService.findById(id)).thenReturn(Optional.empty());
+
+		mvc.perform(get("/api/greetings/{id}", id).accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound())
+				.andExpect(content().string(containsString("greeting " + id)))
+				.andExpect(handler().methodName("greeting"));
+	}
+
+	@Test
 	public void getNewGreeting() throws Exception {
 		mvc.perform(get("/api/greetings/new").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable())
 				.andExpect(handler().methodName("newGreeting"));
