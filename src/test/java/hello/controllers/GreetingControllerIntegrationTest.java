@@ -50,7 +50,7 @@ public class GreetingControllerIntegrationTest extends AbstractTransactionalJUni
 
 	@Test
 	public void getGreeting() {
-		client.get().uri("/greeting/1").accept(MediaType.TEXT_HTML).exchange().expectStatus().isOk().expectHeader()
+		client.get().uri("/greetings/1").accept(MediaType.TEXT_HTML).exchange().expectStatus().isOk().expectHeader()
 				.contentTypeCompatibleWith(MediaType.TEXT_HTML).expectBody(String.class).consumeWith(result -> {
 					assertThat(result.getResponseBody(), containsString("Hello, World!"));
 				});
@@ -58,7 +58,7 @@ public class GreetingControllerIntegrationTest extends AbstractTransactionalJUni
 
 	@Test
 	public void getGreetingName() {
-		client.get().uri("/greeting/1?name=Rob").accept(MediaType.TEXT_HTML).exchange().expectStatus().isOk()
+		client.get().uri("/greetings/1?name=Rob").accept(MediaType.TEXT_HTML).exchange().expectStatus().isOk()
 				.expectHeader().contentTypeCompatibleWith(MediaType.TEXT_HTML).expectBody(String.class)
 				.consumeWith(result -> {
 					assertThat(result.getResponseBody(), containsString("Hello, Rob!"));
@@ -68,13 +68,13 @@ public class GreetingControllerIntegrationTest extends AbstractTransactionalJUni
 	@Test
 	public void getNewGreetingNoUser() {
 		// Should redirect to the sign-in page.
-		client.get().uri("/greeting/new").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound().expectHeader()
-				.value("Location", endsWith("/sign-in"));
+		client.get().uri("/greetings/new").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound()
+				.expectHeader().value("Location", endsWith("/sign-in"));
 	}
 
 	@Test
 	public void getNewGreetingWithUser() {
-		client.mutate().filter(basicAuthentication("Rob", "Haines")).build().get().uri("/greeting/new")
+		client.mutate().filter(basicAuthentication("Rob", "Haines")).build().get().uri("/greetings/new")
 				.accept(MediaType.TEXT_HTML).exchange().expectStatus().isOk().expectBody(String.class)
 				.consumeWith(result -> {
 					assertThat(result.getResponseBody(), containsString("_csrf"));
@@ -92,7 +92,7 @@ public class GreetingControllerIntegrationTest extends AbstractTransactionalJUni
 
 		// We don't set the session ID, so have no credentials.
 		// This should redirect to the sign-in page.
-		client.post().uri("/greeting").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		client.post().uri("/greetings").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.bodyValue(form).exchange().expectStatus().isFound().expectHeader()
 				.value("Location", endsWith("/sign-in"));
 
@@ -111,10 +111,10 @@ public class GreetingControllerIntegrationTest extends AbstractTransactionalJUni
 		form.add("template", "Howdy, %s!");
 
 		// The session ID cookie holds our login credentials.
-		client.post().uri("/greeting").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+		client.post().uri("/greetings").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.bodyValue(form).cookies(cookies -> {
 					cookies.add(SESSION_KEY, tokens[1]);
-				}).exchange().expectStatus().isFound().expectHeader().value("Location", endsWith("/greeting"));
+				}).exchange().expectStatus().isFound().expectHeader().value("Location", endsWith("/greetings"));
 
 		// Check one row is added to the database.
 		assertThat(currentRows + 1, equalTo(countRowsInTable("greeting")));

@@ -55,9 +55,9 @@ public class GreetingControllerApiTest {
 	public void getEmptyGreetingsList() throws Exception {
 		when(greetingService.findAll()).thenReturn(Collections.<Greeting>emptyList());
 
-		mvc.perform(get("/api/greeting").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		mvc.perform(get("/api/greetings").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(handler().methodName("list")).andExpect(jsonPath("$.length()", equalTo(1)))
-				.andExpect(jsonPath("$._links.self.href", endsWith("/api/greeting")));
+				.andExpect(jsonPath("$._links.self.href", endsWith("/api/greetings")));
 	}
 
 	@Test
@@ -65,9 +65,9 @@ public class GreetingControllerApiTest {
 		Greeting g = new Greeting("%s");
 		when(greetingService.findAll()).thenReturn(Collections.<Greeting>singletonList(g));
 
-		mvc.perform(get("/api/greeting").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		mvc.perform(get("/api/greetings").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(handler().methodName("list")).andExpect(jsonPath("$.length()", equalTo(2)))
-				.andExpect(jsonPath("$._links.self.href", endsWith("/api/greeting")))
+				.andExpect(jsonPath("$._links.self.href", endsWith("/api/greetings")))
 				.andExpect(jsonPath("$._embedded.greetings.length()", equalTo(1)));
 	}
 
@@ -77,7 +77,7 @@ public class GreetingControllerApiTest {
 		Greeting g = new Greeting("%s");
 		when(greetingService.findOne(id)).thenReturn(g);
 
-		mvc.perform(get("/api/greeting/{id}", id).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		mvc.perform(get("/api/greetings/{id}", id).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(handler().methodName("greeting")).andExpect(jsonPath("$.template", equalTo("%s")))
 				.andExpect(jsonPath("$._links.self.href", endsWith("" + id)));
@@ -85,13 +85,13 @@ public class GreetingControllerApiTest {
 
 	@Test
 	public void getNewGreeting() throws Exception {
-		mvc.perform(get("/api/greeting/new").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable())
+		mvc.perform(get("/api/greetings/new").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable())
 				.andExpect(handler().methodName("newGreeting"));
 	}
 
 	@Test
 	public void postGreetingNoAuth() throws Exception {
-		mvc.perform(post("/api/greeting").contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(post("/api/greetings").contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
 
@@ -100,7 +100,7 @@ public class GreetingControllerApiTest {
 
 	@Test
 	public void postGreetingBadAuth() throws Exception {
-		mvc.perform(post("/api/greeting").with(anonymous()).contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(post("/api/greetings").with(anonymous()).contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
 
@@ -109,7 +109,7 @@ public class GreetingControllerApiTest {
 
 	@Test
 	public void postGreetingBadRole() throws Exception {
-		mvc.perform(post("/api/greeting").with(user("Rob").roles(BAD_ROLE)).contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(post("/api/greetings").with(user("Rob").roles(BAD_ROLE)).contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden());
 
@@ -120,10 +120,10 @@ public class GreetingControllerApiTest {
 	public void postGreeting() throws Exception {
 		ArgumentCaptor<Greeting> arg = ArgumentCaptor.forClass(Greeting.class);
 
-		mvc.perform(post("/api/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+		mvc.perform(post("/api/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_JSON).content("{ \"template\": \"Howdy, %s!\" }")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated()).andExpect(content().string(""))
-				.andExpect(header().string("Location", containsString("/api/greeting/")))
+				.andExpect(header().string("Location", containsString("/api/greetings/")))
 				.andExpect(handler().methodName("createGreeting"));
 
 		verify(greetingService).save(arg.capture());
@@ -132,7 +132,7 @@ public class GreetingControllerApiTest {
 
 	@Test
 	public void postBadGreeting() throws Exception {
-		mvc.perform(post("/api/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+		mvc.perform(post("/api/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_JSON).content("{ \"template\": \"no placeholder\" }")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isUnprocessableEntity())
 				.andExpect(content().string("")).andExpect(handler().methodName("createGreeting"));
@@ -142,7 +142,7 @@ public class GreetingControllerApiTest {
 
 	@Test
 	public void postLongGreeting() throws Exception {
-		mvc.perform(post("/api/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+		mvc.perform(post("/api/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("{ \"template\": \"abcdefghij %s klmnopqrst uvwxyz\" }").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
@@ -153,7 +153,7 @@ public class GreetingControllerApiTest {
 
 	@Test
 	public void postEmptyGreeting() throws Exception {
-		mvc.perform(post("/api/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+		mvc.perform(post("/api/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_JSON).content("{ \"template\": \"\" }")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isUnprocessableEntity())
 				.andExpect(content().string("")).andExpect(handler().methodName("createGreeting"));

@@ -27,7 +27,7 @@ import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
 @RestController
-@RequestMapping(value = "/api/greeting", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
+@RequestMapping(value = "/api/greetings", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 public class GreetingControllerApi {
 
 	@Autowired

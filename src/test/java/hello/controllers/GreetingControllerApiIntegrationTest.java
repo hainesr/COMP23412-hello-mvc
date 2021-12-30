@@ -43,14 +43,14 @@ public class GreetingControllerApiIntegrationTest extends AbstractTransactionalJ
 
 	@Test
 	public void getGreetingsList() {
-		client.get().uri("/api/greeting").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
+		client.get().uri("/api/greetings").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
 				.expectHeader().contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$.length()")
 				.isEqualTo(currentRows);
 	}
 
 	@Test
 	public void getGreeting() {
-		client.get().uri("/api/greeting/1").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
+		client.get().uri("/api/greetings/1").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isOk()
 				.expectHeader().contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$.template")
 				.isEqualTo("Hello, %s!").jsonPath("$._links.self.href").value(endsWith("/1"));
 	}
@@ -58,7 +58,7 @@ public class GreetingControllerApiIntegrationTest extends AbstractTransactionalJ
 	@Test
 	public void postGreetingNoUser() {
 		// Attempt to POST a valid greeting.
-		client.post().uri("/api/greeting").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+		client.post().uri("/api/greetings").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.bodyValue("{ \"template\": \"Howdy, %s!\" }").exchange().expectStatus().isUnauthorized();
 
 		// Check nothing added to the database.
@@ -68,7 +68,7 @@ public class GreetingControllerApiIntegrationTest extends AbstractTransactionalJ
 	@Test
 	public void postGreetingBadUser() {
 		// Attempt to POST a valid greeting.
-		client.mutate().filter(basicAuthentication("Bad", "Person")).build().post().uri("/api/greeting")
+		client.mutate().filter(basicAuthentication("Bad", "Person")).build().post().uri("/api/greetings")
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.bodyValue("{ \"template\": \"Howdy, %s!\" }").exchange().expectStatus().isUnauthorized();
 
@@ -80,10 +80,10 @@ public class GreetingControllerApiIntegrationTest extends AbstractTransactionalJ
 	@DirtiesContext
 	public void postGreetingWithUser() {
 		// Attempt to POST a valid greeting.
-		client.mutate().filter(basicAuthentication("Rob", "Haines")).build().post().uri("/api/greeting")
+		client.mutate().filter(basicAuthentication("Rob", "Haines")).build().post().uri("/api/greetings")
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.bodyValue("{ \"template\": \"Howdy, %s!\" }").exchange().expectStatus().isCreated().expectHeader()
-				.value("Location", containsString("/api/greeting")).expectBody().isEmpty();
+				.value("Location", containsString("/api/greetings")).expectBody().isEmpty();
 
 		// Check one row is added to the database.
 		assertThat(currentRows + 1, equalTo(countRowsInTable("greeting")));

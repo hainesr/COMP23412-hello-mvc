@@ -20,11 +20,11 @@
         <tr th:each="g : ${greetings}">
           <td th:text="${g.id}">1</td>
           <td>
-            <a th:href="@{/greeting/{num}(num=${g.id})}" th:text="${g.template}">Hello, %s!</a>
+            <a th:href="@{/greetings/{num}(num=${g.id})}" th:text="${g.template}">Hello, %s!</a>
           </td>
           <td>
             <th:block th:each="n, state : ${names}">
-              <a th:href="@{/greeting/{num}(num=${g.id},name=${n})}" th:text="${n}">Rob</a><th:block th:if="!${state.last}">, </th:block>
+              <a th:href="@{/greetings/{num}(num=${g.id},name=${n})}" th:text="${n}">Rob</a><th:block th:if="!${state.last}">, </th:block>
             </th:block>
           </td>
         </tr>
@@ -32,7 +32,7 @@
     </table>
 
     <p>
-      <a class="btn btn-primary" role="button" href="/greeting/new"><i class="fas fa-plus" aria-hidden="true"></i> Add a new greeting</a>
+      <a class="btn btn-primary" role="button" href="/greetings/new"><i class="fas fa-plus" aria-hidden="true"></i> Add a new greeting</a>
     </p>
   </div>
 </body>

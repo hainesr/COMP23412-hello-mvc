@@ -20,7 +20,7 @@ import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
 @Controller
-@RequestMapping(value = "/greeting", produces = MediaType.TEXT_HTML_VALUE)
+@RequestMapping(value = "/greetings", produces = MediaType.TEXT_HTML_VALUE)
 public class GreetingController {
 
 	private static final String[] NAMES = { "Rob", "Caroline", "Markel", "Mustafa" };
@@ -34,7 +34,7 @@ public class GreetingController {
 		model.addAttribute("greetings", greetingService.findAll());
 		model.addAttribute("names", NAMES);
 
-		return "greeting/index";
+		return "greetings/index";
 	}
 
 	@GetMapping("/{id}")
@@ -44,7 +44,7 @@ public class GreetingController {
 		Greeting greeting = greetingService.findOne(id);
 		model.addAttribute("greeting", greeting.getGreeting(name));
 
-		return "greeting/show";
+		return "greetings/show";
 	}
 
 	@GetMapping("/new")
@@ -53,7 +53,7 @@ public class GreetingController {
 			model.addAttribute("greeting", new Greeting());
 		}
 
-		return "greeting/new";
+		return "greetings/new";
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -62,12 +62,12 @@ public class GreetingController {
 
 		if (errors.hasErrors()) {
 			model.addAttribute("greeting", greeting);
-			return "greeting/new";
+			return "greetings/new";
 		}
 
 		greetingService.save(greeting);
 		redirectAttrs.addFlashAttribute("ok_message", "New greeting added.");
 
-		return "redirect:/greeting";
+		return "redirect:/greetings";
 	}
 }

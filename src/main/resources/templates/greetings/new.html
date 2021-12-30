@@ -8,7 +8,7 @@
   <div layout:fragment="content">
     <h1>Add a new greeting</h1>
     
-    <form action="#" th:action="@{/greeting}" th:object="${greeting}" method="post">
+    <form action="#" th:action="@{/greetings}" th:object="${greeting}" method="post">
       <div class="form-group" th:classappend="${#fields.hasErrors('template')}? has-error">
         <label for="template">Greeting text</label>
         <input class="form-control" type="text" name="template" id="template" placeholder="Hello, %s!" autofocus="autofocus" />
@@ -16,7 +16,7 @@
       </div>
     
       <button class="btn btn-primary" type="submit"><i class="fas fa-bookmark" aria-hidden="true"></i> Save</button>
-      <a class="btn btn-warning" role="button" href="/greeting"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
+      <a class="btn btn-warning" role="button" href="/greetings"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
     </form>
   </div>
 </body>

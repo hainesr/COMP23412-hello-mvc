@@ -58,8 +58,8 @@ public class GreetingControllerTest {
 	public void getEmptyGreetingsList() throws Exception {
 		when(greetingService.findAll()).thenReturn(Collections.<Greeting>emptyList());
 
-		mvc.perform(get("/greeting").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-				.andExpect(view().name("greeting/index")).andExpect(handler().methodName("list"));
+		mvc.perform(get("/greetings").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("greetings/index")).andExpect(handler().methodName("list"));
 
 		verifyNoInteractions(greeting);
 	}
@@ -68,8 +68,8 @@ public class GreetingControllerTest {
 	public void getGreetingsList() throws Exception {
 		when(greetingService.findAll()).thenReturn(Collections.<Greeting>singletonList(greeting));
 
-		mvc.perform(get("/greeting").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-				.andExpect(view().name("greeting/index")).andExpect(handler().methodName("list"));
+		mvc.perform(get("/greetings").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("greetings/index")).andExpect(handler().methodName("list"));
 
 		verify(greeting, atLeastOnce()).getId();
 		verify(greeting).getTemplate();
@@ -79,8 +79,8 @@ public class GreetingControllerTest {
 	public void getGreeting() throws Exception {
 		when(greetingService.findOne(1)).thenReturn(greeting);
 
-		mvc.perform(get("/greeting/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-				.andExpect(view().name("greeting/show")).andExpect(handler().methodName("greeting"));
+		mvc.perform(get("/greetings/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("greetings/show")).andExpect(handler().methodName("greeting"));
 
 		verify(greeting).getGreeting("World");
 	}
@@ -89,29 +89,29 @@ public class GreetingControllerTest {
 	public void getGreetingName() throws Exception {
 		when(greetingService.findOne(1)).thenReturn(greeting);
 
-		mvc.perform(get("/greeting/1?name=Rob").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
-				.andExpect(view().name("greeting/show")).andExpect(handler().methodName("greeting"));
+		mvc.perform(get("/greetings/1?name=Rob").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("greetings/show")).andExpect(handler().methodName("greeting"));
 
 		verify(greeting).getGreeting("Rob");
 	}
 
 	@Test
 	public void getNewGreetingNoAuth() throws Exception {
-		mvc.perform(get("/greeting/new").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
+		mvc.perform(get("/greetings/new").accept(MediaType.TEXT_HTML)).andExpect(status().isFound())
 				.andExpect(header().string("Location", endsWith("/sign-in")));
 	}
 
 	@Test
 	public void getNewGreeting() throws Exception {
-		mvc.perform(get("/greeting/new").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML))
-				.andExpect(status().isOk()).andExpect(view().name("greeting/new"))
+		mvc.perform(get("/greetings/new").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk()).andExpect(view().name("greetings/new"))
 				.andExpect(handler().methodName("newGreeting"));
 	}
 
 	@Test
 	public void postGreetingNoAuth() throws Exception {
-		mvc.perform(post("/greeting").contentType(MediaType.APPLICATION_FORM_URLENCODED).param("template", "Howdy, %s!")
-				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
+		mvc.perform(post("/greetings").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
 				.andExpect(header().string("Location", endsWith("/sign-in")));
 
 		verify(greetingService, never()).save(greeting);
@@ -120,7 +120,7 @@ public class GreetingControllerTest {
 	@Test
 	public void postGreetingBadRole() throws Exception {
 		mvc.perform(
-				post("/greeting").with(user("Rob").roles(BAD_ROLE)).contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				post("/greetings").with(user("Rob").roles(BAD_ROLE)).contentType(MediaType.APPLICATION_FORM_URLENCODED)
 						.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML).with(csrf()))
 				.andExpect(status().isForbidden());
 
@@ -129,7 +129,7 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postGreetingNoCsrf() throws Exception {
-		mvc.perform(post("/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+		mvc.perform(post("/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("template", "Howdy, %s!")
 				.accept(MediaType.TEXT_HTML)).andExpect(status().isForbidden());
 
@@ -140,10 +140,10 @@ public class GreetingControllerTest {
 	public void postGreeting() throws Exception {
 		ArgumentCaptor<Greeting> arg = ArgumentCaptor.forClass(Greeting.class);
 
-		mvc.perform(post("/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+		mvc.perform(post("/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("template", "Howdy, %s!")
 				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound()).andExpect(content().string(""))
-				.andExpect(view().name("redirect:/greeting")).andExpect(model().hasNoErrors())
+				.andExpect(view().name("redirect:/greetings")).andExpect(model().hasNoErrors())
 				.andExpect(handler().methodName("createGreeting")).andExpect(flash().attributeExists("ok_message"));
 
 		verify(greetingService).save(arg.capture());
@@ -152,10 +152,10 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postBadGreeting() throws Exception {
-		mvc.perform(post("/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+		mvc.perform(post("/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("template", "no placeholder")
 				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
-				.andExpect(view().name("greeting/new"))
+				.andExpect(view().name("greetings/new"))
 				.andExpect(model().attributeHasFieldErrors("greeting", "template"))
 				.andExpect(handler().methodName("createGreeting")).andExpect(flash().attributeCount(0));
 
@@ -164,10 +164,10 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postLongGreeting() throws Exception {
-		mvc.perform(post("/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+		mvc.perform(post("/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("template", "abcdefghij %s klmnopqrst uvwxyz")
 				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
-				.andExpect(view().name("greeting/new"))
+				.andExpect(view().name("greetings/new"))
 				.andExpect(model().attributeHasFieldErrors("greeting", "template"))
 				.andExpect(handler().methodName("createGreeting")).andExpect(flash().attributeCount(0));
 
@@ -176,9 +176,9 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postEmptyGreeting() throws Exception {
-		mvc.perform(post("/greeting").with(user("Rob").roles(Security.ADMIN_ROLE))
+		mvc.perform(post("/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("template", "").accept(MediaType.TEXT_HTML)
-				.with(csrf())).andExpect(status().isOk()).andExpect(view().name("greeting/new"))
+				.with(csrf())).andExpect(status().isOk()).andExpect(view().name("greetings/new"))
 				.andExpect(model().attributeHasFieldErrors("greeting", "template"))
 				.andExpect(handler().methodName("createGreeting")).andExpect(flash().attributeCount(0));
 
