@@ -56,6 +56,14 @@ public class GreetingControllerApiIntegrationTest extends AbstractTransactionalJ
 	}
 
 	@Test
+	public void getGreetingNotFound() {
+		client.get().uri("/api/greetings/99").accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNotFound()
+				.expectHeader().contentType(MediaType.APPLICATION_JSON).expectBody(String.class).consumeWith(result -> {
+					assertThat(result.getResponseBody(), containsString("greeting 99"));
+				});
+	}
+
+	@Test
 	public void postGreetingNoUser() {
 		// Attempt to POST a valid greeting.
 		client.post().uri("/api/greetings").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)

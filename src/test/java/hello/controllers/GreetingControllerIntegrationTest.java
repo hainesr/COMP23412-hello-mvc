@@ -66,6 +66,15 @@ public class GreetingControllerIntegrationTest extends AbstractTransactionalJUni
 	}
 
 	@Test
+	public void getGreetingNotFound() {
+		client.get().uri("/greetings/99").accept(MediaType.TEXT_HTML).exchange().expectStatus().isNotFound()
+				.expectHeader().contentTypeCompatibleWith(MediaType.TEXT_HTML).expectBody(String.class)
+				.consumeWith(result -> {
+					assertThat(result.getResponseBody(), containsString("greeting 99"));
+				});
+	}
+
+	@Test
 	public void getNewGreetingNoUser() {
 		// Should redirect to the sign-in page.
 		client.get().uri("/greetings/new").accept(MediaType.TEXT_HTML).exchange().expectStatus().isFound()
