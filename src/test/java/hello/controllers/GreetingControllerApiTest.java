@@ -32,13 +32,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import hello.assemblers.GreetingModelAssembler;
 import hello.config.Security;
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(GreetingControllerApi.class)
-@Import(Security.class)
+@Import({ Security.class, GreetingModelAssembler.class })
 public class GreetingControllerApiTest {
 
 	private final static String BAD_ROLE = "USER";

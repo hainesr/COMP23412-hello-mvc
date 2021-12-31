@@ -10,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import hello.assemblers.GreetingModelAssembler;
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
 import hello.exceptions.GreetingNotFoundException;
@@ -34,16 +34,20 @@ public class GreetingControllerApi {
 	@Autowired
 	private GreetingService greetingService;
 
+	@Autowired
+	private GreetingModelAssembler greetingAssembler;
+
 	@GetMapping
-	public CollectionModel<Greeting> list() {
-		return greetingToResource(greetingService.findAll());
+	public CollectionModel<EntityModel<Greeting>> list() {
+		return greetingAssembler.toCollectionModel(greetingService.findAll())
+				.add(linkTo(methodOn(GreetingControllerApi.class).list()).withSelfRel());
 	}
 
 	@GetMapping("/{id}")
 	public EntityModel<Greeting> greeting(@PathVariable("id") long id) {
 		Greeting greeting = greetingService.findById(id).orElseThrow(() -> new GreetingNotFoundException(id));
 
-		return greetingToResource(greeting);
+		return greetingAssembler.toModel(greeting);
 	}
 
 	@GetMapping("/new")
@@ -62,17 +66,5 @@ public class GreetingControllerApi {
 		URI location = linkTo(GreetingControllerApi.class).slash(greeting.getId()).toUri();
 
 		return ResponseEntity.created(location).build();
-	}
-
-	private EntityModel<Greeting> greetingToResource(Greeting greeting) {
-		Link selfLink = linkTo(GreetingControllerApi.class).slash(greeting.getId()).withSelfRel();
-
-		return EntityModel.of(greeting, selfLink);
-	}
-
-	private CollectionModel<Greeting> greetingToResource(Iterable<Greeting> greetings) {
-		Link selfLink = linkTo(methodOn(GreetingControllerApi.class).list()).withSelfRel();
-
-		return CollectionModel.of(greetings, selfLink);
 	}
 }
