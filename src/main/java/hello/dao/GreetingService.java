@@ -8,7 +8,7 @@ public interface GreetingService {
 
 	public long count();
 
-	public void save(Greeting greeting);
+	public Greeting save(Greeting greeting);
 
 	public Iterable<Greeting> findAll();
 

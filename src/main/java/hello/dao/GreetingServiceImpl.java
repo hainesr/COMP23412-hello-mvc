@@ -36,8 +36,8 @@ public class GreetingServiceImpl implements GreetingService {
 	}
 
 	@Override
-	public void save(Greeting greeting) {
-		greetingRepository.save(greeting);
+	public Greeting save(Greeting greeting) {
+		return greetingRepository.save(greeting);
 	}
 
 	@Override
