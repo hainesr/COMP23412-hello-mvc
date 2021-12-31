@@ -11,21 +11,14 @@ import hello.dao.GreetingService;
 import hello.entities.Greeting;
 
 @Configuration
-@Profile("default")
-public class InitialDataLoader {
+@Profile("test")
+public class TestDataLoader {
+	private static final Logger log = LoggerFactory.getLogger(TestDataLoader.class);
 
-	private final static Logger log = LoggerFactory.getLogger(InitialDataLoader.class);
-
-	private final static String[] TEMPLATES = { "Hello, %s!", "Bonjour, %s!" };
+	private final static String[] TEMPLATES = { "Hello, %s!", "Howdy, %s!" };
 
 	@Bean
 	CommandLineRunner initDatabase(GreetingService greetingService) {
-		if (greetingService.count() > 0) {
-			return args -> {
-				log.info("Database already populated. Skipping data initialization.");
-			};
-		}
-
 		return args -> {
 			for (String template : TEMPLATES) {
 				log.info("Preloading: " + greetingService.save(new Greeting(template)));
