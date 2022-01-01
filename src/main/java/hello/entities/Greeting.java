@@ -1,5 +1,7 @@
 package hello.entities;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -49,5 +51,15 @@ public class Greeting {
 	@Override
 	public String toString() {
 		return String.format("Greeting [id = %d, template = %s]", this.id, this.template);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		return Objects.equals(this.hashCode(), o.hashCode());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.id, this.template);
 	}
 }
