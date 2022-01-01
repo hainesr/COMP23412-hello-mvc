@@ -4,6 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,7 +25,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -49,9 +50,6 @@ public class GreetingControllerApiTest {
 
 	@MockBean
 	private GreetingService greetingService;
-
-	@Mock
-	private Greeting greeting;
 
 	@Test
 	public void getEmptyGreetingsList() throws Exception {
@@ -107,7 +105,7 @@ public class GreetingControllerApiTest {
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
 
-		verify(greetingService, never()).save(greeting);
+		verify(greetingService, never()).save(any(Greeting.class));
 	}
 
 	@Test
@@ -116,7 +114,7 @@ public class GreetingControllerApiTest {
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
 
-		verify(greetingService, never()).save(greeting);
+		verify(greetingService, never()).save(any(Greeting.class));
 	}
 
 	@Test
@@ -125,12 +123,13 @@ public class GreetingControllerApiTest {
 				.content("{ \"template\": \"Howdy, %s!\" }").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isForbidden());
 
-		verify(greetingService, never()).save(greeting);
+		verify(greetingService, never()).save(any(Greeting.class));
 	}
 
 	@Test
 	public void postGreeting() throws Exception {
 		ArgumentCaptor<Greeting> arg = ArgumentCaptor.forClass(Greeting.class);
+		when(greetingService.save(any(Greeting.class))).then(returnsFirstArg());
 
 		mvc.perform(post("/api/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_JSON).content("{ \"template\": \"Howdy, %s!\" }")
@@ -149,7 +148,7 @@ public class GreetingControllerApiTest {
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isUnprocessableEntity())
 				.andExpect(content().string("")).andExpect(handler().methodName("createGreeting"));
 
-		verify(greetingService, never()).save(greeting);
+		verify(greetingService, never()).save(any(Greeting.class));
 	}
 
 	@Test
@@ -160,7 +159,7 @@ public class GreetingControllerApiTest {
 				.andExpect(status().isUnprocessableEntity()).andExpect(content().string(""))
 				.andExpect(handler().methodName("createGreeting"));
 
-		verify(greetingService, never()).save(greeting);
+		verify(greetingService, never()).save(any(Greeting.class));
 	}
 
 	@Test
@@ -170,6 +169,6 @@ public class GreetingControllerApiTest {
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isUnprocessableEntity())
 				.andExpect(content().string("")).andExpect(handler().methodName("createGreeting"));
 
-		verify(greetingService, never()).save(greeting);
+		verify(greetingService, never()).save(any(Greeting.class));
 	}
 }

@@ -4,10 +4,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -62,8 +63,6 @@ public class GreetingControllerTest {
 
 		mvc.perform(get("/greetings").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 				.andExpect(view().name("greetings/index")).andExpect(handler().methodName("list"));
-
-		verifyNoInteractions(greeting);
 	}
 
 	@Test
@@ -103,8 +102,6 @@ public class GreetingControllerTest {
 
 		mvc.perform(get("/greetings/1").accept(MediaType.TEXT_HTML)).andExpect(status().isNotFound())
 				.andExpect(handler().methodName("greeting")).andExpect(content().string(containsString("greeting 1")));
-
-		verifyNoInteractions(greeting);
 	}
 
 	@Test
@@ -126,7 +123,7 @@ public class GreetingControllerTest {
 				.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
 				.andExpect(header().string("Location", endsWith("/sign-in")));
 
-		verify(greetingService, never()).save(greeting);
+		verify(greetingService, never()).save(any(Greeting.class));
 	}
 
 	@Test
@@ -136,7 +133,7 @@ public class GreetingControllerTest {
 						.param("template", "Howdy, %s!").accept(MediaType.TEXT_HTML).with(csrf()))
 				.andExpect(status().isForbidden());
 
-		verify(greetingService, never()).save(greeting);
+		verify(greetingService, never()).save(any(Greeting.class));
 	}
 
 	@Test
@@ -145,12 +142,13 @@ public class GreetingControllerTest {
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("template", "Howdy, %s!")
 				.accept(MediaType.TEXT_HTML)).andExpect(status().isForbidden());
 
-		verify(greetingService, never()).save(greeting);
+		verify(greetingService, never()).save(any(Greeting.class));
 	}
 
 	@Test
 	public void postGreeting() throws Exception {
 		ArgumentCaptor<Greeting> arg = ArgumentCaptor.forClass(Greeting.class);
+		when(greetingService.save(any(Greeting.class))).then(returnsFirstArg());
 
 		mvc.perform(post("/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("template", "Howdy, %s!")
@@ -171,7 +169,7 @@ public class GreetingControllerTest {
 				.andExpect(model().attributeHasFieldErrors("greeting", "template"))
 				.andExpect(handler().methodName("createGreeting")).andExpect(flash().attributeCount(0));
 
-		verify(greetingService, never()).save(greeting);
+		verify(greetingService, never()).save(any(Greeting.class));
 	}
 
 	@Test
@@ -183,7 +181,7 @@ public class GreetingControllerTest {
 				.andExpect(model().attributeHasFieldErrors("greeting", "template"))
 				.andExpect(handler().methodName("createGreeting")).andExpect(flash().attributeCount(0));
 
-		verify(greetingService, never()).save(greeting);
+		verify(greetingService, never()).save(any(Greeting.class));
 	}
 
 	@Test
@@ -194,6 +192,6 @@ public class GreetingControllerTest {
 				.andExpect(model().attributeHasFieldErrors("greeting", "template"))
 				.andExpect(handler().methodName("createGreeting")).andExpect(flash().attributeCount(0));
 
-		verify(greetingService, never()).save(greeting);
+		verify(greetingService, never()).save(any(Greeting.class));
 	}
 }
