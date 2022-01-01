@@ -3,13 +3,12 @@ package hello.controllers;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import java.net.URI;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -62,9 +61,9 @@ public class GreetingControllerApi {
 			return ResponseEntity.unprocessableEntity().build();
 		}
 
-		greetingService.save(greeting);
-		URI location = linkTo(GreetingControllerApi.class).slash(greeting.getId()).toUri();
+		Greeting newGreeting = greetingService.save(greeting);
+		EntityModel<Greeting> entity = greetingAssembler.toModel(newGreeting);
 
-		return ResponseEntity.created(location).build();
+		return ResponseEntity.created(entity.getRequiredLink(IanaLinkRelations.SELF).toUri()).build();
 	}
 }
