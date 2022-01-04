@@ -27,7 +27,7 @@ import hello.exceptions.GreetingNotFoundException;
 @RequestMapping(value = "/greetings", produces = MediaType.TEXT_HTML_VALUE)
 public class GreetingController {
 
-	private static final String[] NAMES = { "Rob", "Caroline", "Markel", "Mustafa" };
+	private static final String[] NAMES = { "Rob", "Caroline", "Markel", "Mustafa", "Tom" };
 
 	@Autowired
 	private GreetingService greetingService;
