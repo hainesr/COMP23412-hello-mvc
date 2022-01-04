@@ -197,11 +197,24 @@ public class GreetingControllerTest {
 
 	@Test
 	public void deleteGreeting() throws Exception {
+		when(greetingService.existsById(1)).thenReturn(true);
+
 		mvc.perform(delete("/greetings/1").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML)
 				.with(csrf())).andExpect(status().isFound()).andExpect(view().name("redirect:/greetings"))
 				.andExpect(handler().methodName("deleteGreeting")).andExpect(flash().attributeExists("ok_message"));
 
 		verify(greetingService).deleteById(1);
+	}
+
+	@Test
+	public void deleteGreetingNotFound() throws Exception {
+		when(greetingService.existsById(1)).thenReturn(false);
+
+		mvc.perform(delete("/greetings/1").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML)
+				.with(csrf())).andExpect(status().isNotFound()).andExpect(view().name("greetings/not_found"))
+				.andExpect(handler().methodName("deleteGreeting"));
+
+		verify(greetingService, never()).deleteById(1);
 	}
 
 	@Test
