@@ -21,6 +21,21 @@ public class GreetingServiceImpl implements GreetingService {
 	}
 
 	@Override
+	public boolean existsById(long id) {
+		return greetingRepository.existsById(id);
+	}
+
+	@Override
+	public Greeting save(Greeting greeting) {
+		return greetingRepository.save(greeting);
+	}
+
+	@Override
+	public Iterable<Greeting> saveAll(Iterable<Greeting> greetings) {
+		return greetingRepository.saveAll(greetings);
+	}
+
+	@Override
 	public Iterable<Greeting> findAll() {
 		return greetingRepository.findAll();
 	}
@@ -31,13 +46,13 @@ public class GreetingServiceImpl implements GreetingService {
 	}
 
 	@Override
-	public Greeting findOne(long id) {
-		return findById(id).orElse(null);
+	public Iterable<Greeting> findAllById(Iterable<Long> ids) {
+		return greetingRepository.findAllById(ids);
 	}
 
 	@Override
-	public Greeting save(Greeting greeting) {
-		return greetingRepository.save(greeting);
+	public void delete(Greeting greeting) {
+		greetingRepository.delete(greeting);
 	}
 
 	@Override
@@ -48,5 +63,15 @@ public class GreetingServiceImpl implements GreetingService {
 	@Override
 	public void deleteAll() {
 		greetingRepository.deleteAll();
+	}
+
+	@Override
+	public void deleteAll(Iterable<Greeting> greetings) {
+		greetingRepository.deleteAll(greetings);
+	}
+
+	@Override
+	public void deleteAllById(Iterable<Long> ids) {
+		greetingRepository.deleteAllById(ids);
 	}
 }
