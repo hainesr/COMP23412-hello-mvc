@@ -89,8 +89,8 @@ public class GreetingControllerApiTest {
 		when(greetingService.findById(id)).thenReturn(Optional.empty());
 
 		mvc.perform(get("/api/greetings/{id}", id).accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound())
-				.andExpect(content().string(containsString("greeting " + id)))
-				.andExpect(handler().methodName("greeting"));
+				.andExpect(jsonPath("$.error", containsString("greeting " + id)))
+				.andExpect(jsonPath("$.id", equalTo("" + id))).andExpect(handler().methodName("greeting"));
 	}
 
 	@Test

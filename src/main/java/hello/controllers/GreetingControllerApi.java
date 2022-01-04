@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import hello.assemblers.GreetingModelAssembler;
@@ -33,17 +31,18 @@ import hello.exceptions.GreetingNotFoundException;
 @RequestMapping(value = "/api/greetings", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 public class GreetingControllerApi {
 
+	private static final String NOT_FOUND_MSG = "{ \"error\": \"%s\", \"id\": \"%d\" }";
+
 	@Autowired
 	private GreetingService greetingService;
 
 	@Autowired
 	private GreetingModelAssembler greetingAssembler;
 
-	@ResponseBody
 	@ExceptionHandler(GreetingNotFoundException.class)
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public String greetingNotFoundHandler(GreetingNotFoundException ex) {
-		return ex.getMessage();
+	public ResponseEntity<?> greetingNotFoundHandler(GreetingNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(String.format(NOT_FOUND_MSG, ex.getMessage(), ex.getId()));
 	}
 
 	@GetMapping
