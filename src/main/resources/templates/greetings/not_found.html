@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/default}">
+<head>
+  <title>Greeting Not Found</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <h1>Greeting not found</h1>
+    
+    <p>
+      Sorry, greeting <span th:text="${not_found_id}">0</span> was not found.
+    </p>
+    
+    <p>
+      <a class="btn btn-primary" role="button" th:href="@{/greetings}"><i class="fas fa-arrow-left" aria-hidden="true"></i> Greetings list</a>
+    </p>
+  </div>
+</body>
+</html>

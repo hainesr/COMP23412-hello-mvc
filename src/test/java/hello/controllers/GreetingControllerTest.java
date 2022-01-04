@@ -1,7 +1,6 @@
 package hello.controllers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
@@ -101,7 +100,7 @@ public class GreetingControllerTest {
 		when(greetingService.findById(1)).thenReturn(Optional.empty());
 
 		mvc.perform(get("/greetings/1").accept(MediaType.TEXT_HTML)).andExpect(status().isNotFound())
-				.andExpect(handler().methodName("greeting")).andExpect(content().string(containsString("greeting 1")));
+				.andExpect(handler().methodName("greeting")).andExpect(view().name("greetings/not_found"));
 	}
 
 	@Test

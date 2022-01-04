@@ -70,7 +70,7 @@ public class GreetingControllerIntegrationTest extends AbstractTransactionalJUni
 		client.get().uri("/greetings/99").accept(MediaType.TEXT_HTML).exchange().expectStatus().isNotFound()
 				.expectHeader().contentTypeCompatibleWith(MediaType.TEXT_HTML).expectBody(String.class)
 				.consumeWith(result -> {
-					assertThat(result.getResponseBody(), containsString("greeting 99"));
+					assertThat(result.getResponseBody(), containsString("99"));
 				});
 	}
 
