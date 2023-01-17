@@ -1,4 +1,4 @@
-Copyright 2017, 2018 Robert Haines, University of Manchester, UK
+Copyright 2017-2023 Robert Haines, University of Manchester, UK
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
