@@ -22,16 +22,16 @@
         <li class="nav-item"><a class="nav-link" th:href="@{/greetings}">Greetings</a></li>
       </ul>
       <div class="navbar-text" sec:authorize="!isAuthenticated()">
-      	<i class="fas fa-user" aria-hidden="true"></i> Not signed in |
+      	<i class="fa-solid fa-user" aria-hidden="true"></i> Not signed in |
       	<a class="btn btn-primary navbar-btn" role="button" th:href="@{/sign-in}">
-          <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign in
+          <i class="fa-solid fa-sign-in-alt" aria-hidden="true"></i> Sign in
         </a>
       </div>
       <form class="form-inline" th:action="@{/sign-out}" method="post" sec:authorize="isAuthenticated()">
         <div class="navbar-text">
-          <i class="fas fa-user" aria-hidden="true"></i> Signed in as <span sec:authentication="name"></span> |
+          <i class="fa-solid fa-user" aria-hidden="true"></i> Signed in as <span sec:authentication="name"></span> |
         </div>&nbsp;
-        <button type="submit" class="btn btn-warning navbar-btn"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign out</button>
+        <button type="submit" class="btn btn-warning navbar-btn"><i class="fa-solid fa-sign-out-alt" aria-hidden="true"></i> Sign out</button>
       </form>
     </div>
   </nav>
@@ -39,7 +39,7 @@
   <div class="container mt-lg-5">
     <div class="alert alert-success alert-dismissible" role="alert" th:if="${ok_message}">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <i class="fas fa-times" aria-hidden="true"></i>
+        <i class="fa-solid fa-times" aria-hidden="true"></i>
       </button>
 
       <span th:text="${ok_message}">Success!</span>
