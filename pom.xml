@@ -141,4 +141,7 @@
     </plugins>
   </build>
 
+  <properties>
+  	<spring-security.version>5.8.9</spring-security.version>
+  </properties>
 </project>
