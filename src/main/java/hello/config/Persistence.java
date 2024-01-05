@@ -3,7 +3,6 @@ package hello.config;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
@@ -19,6 +18,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import jakarta.persistence.EntityManagerFactory;
 
 @Configuration
 @Profile("default")

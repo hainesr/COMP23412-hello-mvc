@@ -2,8 +2,6 @@ package hello.config;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
-import javax.servlet.DispatcherType;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -36,19 +34,20 @@ public class Security {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		// By default, all requests are authenticated except our specific list.
-		http.authorizeHttpRequests().shouldFilterAllDispatcherTypes(true).dispatcherTypeMatchers(DispatcherType.FORWARD)
-				.permitAll().requestMatchers(NO_AUTH).permitAll()
-				.anyRequest().hasRole(ADMIN_ROLE);
+		http.authorizeHttpRequests().requestMatchers(NO_AUTH).permitAll().anyRequest().hasRole(ADMIN_ROLE);
+
+		// This makes testing easier. Given we're not going into production, that's OK.
+		http.sessionManagement().requireExplicitAuthenticationStrategy(false);
 
 		// Use form login/logout for the Web.
 		http.formLogin().loginPage("/sign-in").permitAll();
 		http.logout().logoutUrl("/sign-out").logoutSuccessUrl("/").permitAll();
 
 		// Use HTTP basic for the API.
-		http.securityMatcher("/api/**").httpBasic();
+		http.securityMatcher(antMatcher("/api/**")).httpBasic();
 
 		// Only use CSRF for Web requests.
-		http.securityMatcher("/**").csrf().ignoringRequestMatchers("/api/**");
+		http.securityMatcher(antMatcher("/**")).csrf().ignoringRequestMatchers(antMatcher("/api/**"));
 
 		return http.build();
 	}

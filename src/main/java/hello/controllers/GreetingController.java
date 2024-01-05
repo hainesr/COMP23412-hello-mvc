@@ -1,7 +1,5 @@
 package hello.controllers;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
 import hello.exceptions.GreetingNotFoundException;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping(value = "/greetings", produces = MediaType.TEXT_HTML_VALUE)

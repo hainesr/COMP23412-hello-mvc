@@ -3,8 +3,6 @@ package hello.controllers;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -26,6 +24,7 @@ import hello.assemblers.GreetingModelAssembler;
 import hello.dao.GreetingService;
 import hello.entities.Greeting;
 import hello.exceptions.GreetingNotFoundException;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/api/greetings", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })

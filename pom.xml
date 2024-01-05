@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.18</version>
+    <version>3.0.13</version>
   </parent>
 
   <dependencies>
@@ -99,7 +99,7 @@
     </dependency>
     <dependency>
     	<groupId>org.thymeleaf.extras</groupId>
-    	<artifactId>thymeleaf-extras-springsecurity5</artifactId>
+    	<artifactId>thymeleaf-extras-springsecurity6</artifactId>
     </dependency>
     <dependency>
     	<groupId>org.webjars</groupId>
@@ -141,7 +141,4 @@
     </plugins>
   </build>
 
-  <properties>
-  	<spring-security.version>5.8.9</spring-security.version>
-  </properties>
 </project>

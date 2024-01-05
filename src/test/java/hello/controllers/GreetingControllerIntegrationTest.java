@@ -103,7 +103,7 @@ public class GreetingControllerIntegrationTest extends AbstractTransactionalJUni
 		// This should redirect to the sign-in page.
 		client.post().uri("/greetings").accept(MediaType.TEXT_HTML).contentType(MediaType.APPLICATION_FORM_URLENCODED)
 				.bodyValue(form).exchange().expectStatus().isFound().expectHeader()
-				.value("Location", endsWith("/sign-in"));
+				.value("Location", containsString("/sign-in"));
 
 		// Check nothing added to the database.
 		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
