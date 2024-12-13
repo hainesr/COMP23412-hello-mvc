@@ -4,7 +4,7 @@
 
   <groupId>uk.ac.man.cs</groupId>
   <artifactId>comp23412-hello-mvc</artifactId>
-  <version>5.0.0</version>
+  <version>6.0.0</version>
   <name>COMP23412 Hello MVC</name>
 
   <parent>
