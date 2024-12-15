@@ -12,35 +12,35 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" th:href="@{/}">Hello MVC</a>
-    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#hello-navbar-collapse" aria-expanded="false">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <div class="container-fluid">
+      <a class="navbar-brand" th:href="@{/}">Hello MVC</a>
+      <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#hello-navbar-collapse" aria-expanded="false">
+        <span class="navbar-toggler-icon"></span>
+      </button>
       
-    <div class="collapse navbar-collapse" id="hello-navbar-collapse">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item"><a class="nav-link" th:href="@{/greetings}">Greetings</a></li>
-      </ul>
-      <div class="navbar-text" sec:authorize="!isAuthenticated()">
-      	<i class="fa-solid fa-user" aria-hidden="true"></i> Not signed in |
-      	<a class="btn btn-primary navbar-btn" role="button" th:href="@{/sign-in}">
-          <i class="fa-solid fa-sign-in-alt" aria-hidden="true"></i> Sign in
-        </a>
+      <div class="collapse navbar-collapse" id="hello-navbar-collapse">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" th:href="@{/greetings}">Greetings</a></li>
+        </ul>
+        <div class="navbar-text" sec:authorize="!isAuthenticated()">
+      	  <i class="fa-solid fa-user" aria-hidden="true"></i> Not signed in |
+      	  <a class="btn btn-primary navbar-btn" role="button" th:href="@{/sign-in}">
+            <i class="fa-solid fa-sign-in-alt" aria-hidden="true"></i> Sign in
+          </a>
+        </div>
+        <form class="d-flex" th:action="@{/sign-out}" method="post" sec:authorize="isAuthenticated()">
+          <div class="navbar-text">
+            <i class="fa-solid fa-user" aria-hidden="true"></i> Signed in as <span sec:authentication="name"></span> |
+          </div>&nbsp;
+          <button type="submit" class="btn btn-warning navbar-btn"><i class="fa-solid fa-sign-out-alt" aria-hidden="true"></i> Sign out</button>
+        </form>
       </div>
-      <form class="form-inline" th:action="@{/sign-out}" method="post" sec:authorize="isAuthenticated()">
-        <div class="navbar-text">
-          <i class="fa-solid fa-user" aria-hidden="true"></i> Signed in as <span sec:authentication="name"></span> |
-        </div>&nbsp;
-        <button type="submit" class="btn btn-warning navbar-btn"><i class="fa-solid fa-sign-out-alt" aria-hidden="true"></i> Sign out</button>
-      </form>
     </div>
   </nav>
 
   <div class="container mt-lg-5">
     <div class="alert alert-success alert-dismissible" role="alert" th:if="${ok_message}">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <i class="fa-solid fa-times" aria-hidden="true"></i>
-      </button>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 
       <span th:text="${ok_message}">Success!</span>
     </div>
@@ -50,7 +50,6 @@
     </div>
   </div>
 
-  <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
   <script type="text/javascript" src="/webjars/popper.js/umd/popper.min.js"></script>
   <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </body>
