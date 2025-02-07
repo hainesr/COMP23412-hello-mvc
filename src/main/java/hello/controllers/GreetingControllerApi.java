@@ -53,7 +53,7 @@ public class GreetingControllerApi {
 	@GetMapping("/{id}")
 	public EntityModel<Greeting> greeting(@PathVariable("id") long id) {
 		Greeting greeting = greetingService.findById(id).orElseThrow(() -> new GreetingNotFoundException(id));
-
+		System.out.println();
 		return greetingAssembler.toModel(greeting);
 	}
 

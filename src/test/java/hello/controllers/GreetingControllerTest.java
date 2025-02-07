@@ -13,6 +13,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
@@ -137,6 +138,8 @@ public class GreetingControllerTest {
 
 	@Test
 	public void postGreetingNoCsrf() throws Exception {
+		when(greetingService.findById(1)).thenReturn(Optional.of(greeting));
+
 		mvc.perform(post("/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED).param("template", "Howdy, %s!")
 				.accept(MediaType.TEXT_HTML)).andExpect(status().isForbidden());
@@ -193,4 +196,5 @@ public class GreetingControllerTest {
 
 		verify(greetingService, never()).save(any(Greeting.class));
 	}
+	
 }
