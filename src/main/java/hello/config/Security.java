@@ -1,7 +1,6 @@
 package hello.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +14,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
@@ -27,30 +27,31 @@ public class Security {
 	// This includes the paths where static resources, such as bootstrap, are
 	// located. We also specifically omit '/greeting/new' here so that we require
 	// log in before submitting the new greeting.
-	private static final RequestMatcher[] NO_AUTH = { antMatcher(HttpMethod.GET, "/webjars/**"),
-			antMatcher(HttpMethod.GET, "/"), antMatcher(HttpMethod.GET, "/api/**"),
-			antMatcher(HttpMethod.GET, "/greetings"), antMatcher(HttpMethod.GET, "/greetings/{id:[\\d]+}"),
-			antMatcher(HttpMethod.DELETE, "/**") };
+	private static final PathPatternRequestMatcher.Builder mvc = PathPatternRequestMatcher.withDefaults();
+	private static final RequestMatcher[] NO_AUTH = { mvc.matcher(HttpMethod.GET, "/webjars/**"),
+			mvc.matcher(HttpMethod.GET, "/"), mvc.matcher(HttpMethod.GET, "/api/**"),
+			mvc.matcher(HttpMethod.GET, "/greetings"), mvc.matcher(HttpMethod.GET, "/greetings/{id:[\\d]+}"),
+			mvc.matcher(HttpMethod.DELETE, "/**") };
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
-				// By default, all requests are authenticated except our specific list.
-				.authorizeHttpRequests(
-						auth -> auth.requestMatchers(NO_AUTH).permitAll().anyRequest().hasRole(ADMIN_ROLE))
+		// By default, all requests are authenticated except our specific list.
+		.authorizeHttpRequests(
+				auth -> auth.requestMatchers(NO_AUTH).permitAll().anyRequest().hasRole(ADMIN_ROLE))
 
-				// This makes testing easier. Given we're not going into production, that's OK.
-				.sessionManagement(session -> session.requireExplicitAuthenticationStrategy(false))
+		// This makes testing easier. Given we're not going into production, that's OK.
+		.sessionManagement(session -> session.requireExplicitAuthenticationStrategy(false))
 
-				// Use form login/logout for the Web.
-				.formLogin(login -> login.loginPage("/sign-in").permitAll())
-				.logout(logout -> logout.logoutUrl("/sign-out").logoutSuccessUrl("/").permitAll())
+		// Use form login/logout for the Web.
+		.formLogin(login -> login.loginPage("/sign-in").permitAll())
+		.logout(logout -> logout.logoutUrl("/sign-out").logoutSuccessUrl("/").permitAll())
 
-				// Use HTTP basic for the API.
-				.httpBasic(withDefaults()).securityMatcher(antMatcher("/api/**"))
+		// Use HTTP basic for the API.
+		.httpBasic(withDefaults()).securityMatcher(mvc.matcher("/api/**"))
 
-				// Only use CSRF for Web requests.
-				.csrf(csrf -> csrf.ignoringRequestMatchers(antMatcher("/api/**"))).securityMatcher(antMatcher("/**"));
+		// Only use CSRF for Web requests.
+		.csrf(csrf -> csrf.ignoringRequestMatchers(mvc.matcher("/api/**"))).securityMatcher(mvc.matcher("/**"));
 
 		return http.build();
 	}
