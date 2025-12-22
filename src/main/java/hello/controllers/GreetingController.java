@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
 @RequestMapping(value = "/greetings", produces = MediaType.TEXT_HTML_VALUE)
 public class GreetingController {
 
-	private static final String[] NAMES = { "Rob", "Caroline", "Markel", "Mustafa", "Tom" };
+	private static final String[] NAMES = { "Rob", "Caroline", "Duncan", "Markel", "Mustafa", "Tom" };
 
 	@Autowired
 	private GreetingService greetingService;
