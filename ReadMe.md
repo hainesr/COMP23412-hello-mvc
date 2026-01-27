@@ -4,7 +4,7 @@
 
 *This is the skeleton lab code for the individual exercise in week 1.*
 
-See the instructions in Blackboard for more details.
+See the instructions in Canvas for more details.
 
 #### Licence
 
