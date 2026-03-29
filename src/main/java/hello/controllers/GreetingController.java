@@ -87,6 +87,7 @@ public class GreetingController {
 
 	@DeleteMapping("/{id}")
 	public String deleteGreeting(@PathVariable("id") long id, RedirectAttributes redirectAttrs) {
+		greetingService.findById(id).orElseThrow(() -> new GreetingNotFoundException(id));
 		greetingService.deleteById(id);
 		redirectAttrs.addFlashAttribute("ok_message", "Greeting deleted.");
 

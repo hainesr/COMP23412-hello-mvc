@@ -191,8 +191,23 @@ public class GreetingControllerApiTest {
 	}
 
 	@Test
+	public void deleteGreetingNotFound() throws Exception {
+		int id = 1;
+		when(greetingService.findById(id)).thenReturn(Optional.empty());
+
+		mvc.perform(delete("/api/greetings/{id}", id).with(user("Rob").roles(Security.ADMIN_ROLE))
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.error", containsString("greeting " + id)))
+				.andExpect(jsonPath("$.id", equalTo("" + id)))
+				.andExpect(handler().methodName("deleteGreeting"));
+
+		verify(greetingService, never()).deleteById(id);
+	}
+
+	@Test
 	public void deleteGreeting() throws Exception {
 		int id = 1;
+		when(greetingService.findById(id)).thenReturn(Optional.of(new Greeting("%s")));
 
 		mvc.perform(delete("/api/greetings/{id}", id).with(user("Rob").roles(Security.ADMIN_ROLE))
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent())

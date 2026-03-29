@@ -78,6 +78,7 @@ public class GreetingControllerApi {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteGreeting(@PathVariable("id") long id) {
+		greetingService.findById(id).orElseThrow(() -> new GreetingNotFoundException(id));
 		greetingService.deleteById(id);
 
 		return ResponseEntity.noContent().build();
