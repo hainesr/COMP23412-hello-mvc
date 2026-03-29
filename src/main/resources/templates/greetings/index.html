@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
   layout:decorate="~{layouts/default}">
 <head>
   <title>All</title>
@@ -30,7 +31,7 @@
           </td>
           <td>
             <form th:action="@{/greetings/{num}(num=${g.id})}" th:method="delete">
-              <button type="submit" class="btn btn-danger">Delete</button>
+              <button type="submit" class="btn btn-danger" sec:authorize="isAuthenticated()">Delete</button>
             </form>
           </td>
         </tr>
@@ -39,7 +40,7 @@
 
     <form th:action="@{/greetings}" th:method="delete">
       <a class="btn btn-primary" role="button" href="/greetings/new"><i class="fa-solid fa-plus" aria-hidden="true"></i> Add a new greeting</a>
-      <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash" aria-hidden="true"></i> Delete all</button>
+      <button type="submit" class="btn btn-danger" sec:authorize="isAuthenticated()"><i class="fa-solid fa-trash" aria-hidden="true"></i> Delete all</button>
     </form>
   </div>
 </body>
