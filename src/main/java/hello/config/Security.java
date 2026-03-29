@@ -30,8 +30,7 @@ public class Security {
 	private static final PathPatternRequestMatcher.Builder mvc = PathPatternRequestMatcher.withDefaults();
 	private static final RequestMatcher[] NO_AUTH = { mvc.matcher(HttpMethod.GET, "/webjars/**"),
 			mvc.matcher(HttpMethod.GET, "/"), mvc.matcher(HttpMethod.GET, "/api/**"),
-			mvc.matcher(HttpMethod.GET, "/greetings"), mvc.matcher(HttpMethod.GET, "/greetings/{id:[\\d]+}"),
-			mvc.matcher(HttpMethod.DELETE, "/**") };
+			mvc.matcher(HttpMethod.GET, "/greetings"), mvc.matcher(HttpMethod.GET, "/greetings/{id:[\\d]+}") };
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

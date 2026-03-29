@@ -196,6 +196,22 @@ public class GreetingControllerTest {
 	}
 
 	@Test
+	public void deleteGreetingNoAuth() throws Exception {
+		mvc.perform(delete("/greetings/1").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
+				.andExpect(header().string("Location", endsWith("/sign-in")));
+
+		verify(greetingService, never()).deleteById(1);
+	}
+
+	@Test
+	public void deleteAllGreetingsNoAuth() throws Exception {
+		mvc.perform(delete("/greetings").accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
+				.andExpect(header().string("Location", endsWith("/sign-in")));
+
+		verify(greetingService, never()).deleteAll();
+	}
+
+	@Test
 	public void deleteGreeting() throws Exception {
 		mvc.perform(delete("/greetings/1").with(user("Rob").roles(Security.ADMIN_ROLE)).accept(MediaType.TEXT_HTML)
 				.with(csrf())).andExpect(status().isFound()).andExpect(view().name("redirect:/greetings"))

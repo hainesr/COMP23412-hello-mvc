@@ -174,6 +174,23 @@ public class GreetingControllerApiTest {
 	}
 
 	@Test
+	public void deleteGreetingNoAuth() throws Exception {
+		int id = 1;
+
+		mvc.perform(delete("/api/greetings/{id}", id).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isUnauthorized());
+
+		verify(greetingService, never()).deleteById(id);
+	}
+
+	@Test
+	public void deleteAllGreetingsNoAuth() throws Exception {
+		mvc.perform(delete("/api/greetings").accept(MediaType.APPLICATION_JSON)).andExpect(status().isUnauthorized());
+
+		verify(greetingService, never()).deleteAll();
+	}
+
+	@Test
 	public void deleteGreeting() throws Exception {
 		int id = 1;
 
