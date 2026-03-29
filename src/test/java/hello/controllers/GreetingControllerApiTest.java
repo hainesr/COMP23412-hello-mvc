@@ -180,5 +180,7 @@ public class GreetingControllerApiTest {
 		mvc.perform(delete("/api/greetings/{id}", id).with(user("Rob").roles(Security.ADMIN_ROLE))
 				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent())
 				.andExpect(handler().methodName("deleteGreeting"));
+
+		verify(greetingService).deleteById(id);
 	}
 }
