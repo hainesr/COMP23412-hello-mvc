@@ -183,4 +183,13 @@ public class GreetingControllerApiTest {
 
 		verify(greetingService).deleteById(id);
 	}
+
+	@Test
+	public void deleteAllGreetings() throws Exception {
+		mvc.perform(delete("/api/greetings").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent())
+				.andExpect(handler().methodName("deleteAllGreetings"));
+
+		verify(greetingService).deleteAll();
+	}
 }
