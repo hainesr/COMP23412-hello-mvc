@@ -129,6 +129,91 @@ public class GreetingControllerIntegrationTest extends AbstractTransactionalJUni
 		assertThat(currentRows + 1, equalTo(countRowsInTable("greeting")));
 	}
 
+	@Test
+	public void deleteGreetingNoUser() {
+		String[] tokens = login();
+
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("_method", "DELETE");
+
+		// We don't set the session ID, so have no credentials.
+		// This should redirect to the sign-in page.
+		client.post().uri("/greetings/1").accept(MediaType.TEXT_HTML)
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).bodyValue(form).exchange().expectStatus().isFound()
+				.expectHeader().value("Location", containsString("/sign-in"));
+
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	@DirtiesContext
+	public void deleteGreetingWithUser() {
+		String[] tokens = login();
+
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("_method", "DELETE");
+
+		client.post().uri("/greetings/1").accept(MediaType.TEXT_HTML)
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).bodyValue(form)
+				.cookies(cookies -> cookies.add(SESSION_KEY, tokens[1])).exchange().expectStatus().isFound()
+				.expectHeader().value("Location", endsWith("/greetings"));
+
+		assertThat(currentRows - 1, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	public void deleteGreetingNotFound() {
+		String[] tokens = login();
+
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("_method", "DELETE");
+
+		client.post().uri("/greetings/99").accept(MediaType.TEXT_HTML)
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).bodyValue(form)
+				.cookies(cookies -> cookies.add(SESSION_KEY, tokens[1])).exchange().expectStatus().isNotFound()
+				.expectHeader().contentTypeCompatibleWith(MediaType.TEXT_HTML).expectBody(String.class)
+				.consumeWith(result -> {
+					assertThat(result.getResponseBody(), containsString("99"));
+				});
+	}
+
+	@Test
+	public void deleteAllGreetingsNoUser() {
+		String[] tokens = login();
+
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("_method", "DELETE");
+
+		// We don't set the session ID, so have no credentials.
+		// This should redirect to the sign-in page.
+		client.post().uri("/greetings").accept(MediaType.TEXT_HTML)
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).bodyValue(form).exchange().expectStatus().isFound()
+				.expectHeader().value("Location", containsString("/sign-in"));
+
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	@DirtiesContext
+	public void deleteAllGreetingsWithUser() {
+		String[] tokens = login();
+
+		MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+		form.add("_csrf", tokens[0]);
+		form.add("_method", "DELETE");
+
+		client.post().uri("/greetings").accept(MediaType.TEXT_HTML)
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED).bodyValue(form)
+				.cookies(cookies -> cookies.add(SESSION_KEY, tokens[1])).exchange().expectStatus().isFound()
+				.expectHeader().value("Location", endsWith("/greetings"));
+
+		assertThat(0, equalTo(countRowsInTable("greeting")));
+	}
+
 	private String[] login() {
 		String[] tokens = new String[2];
 

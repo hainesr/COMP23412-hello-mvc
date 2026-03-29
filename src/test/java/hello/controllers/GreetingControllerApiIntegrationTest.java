@@ -95,4 +95,46 @@ public class GreetingControllerApiIntegrationTest extends AbstractTransactionalJ
 		// Check one row is added to the database.
 		assertThat(currentRows + 1, equalTo(countRowsInTable("greeting")));
 	}
+
+	@Test
+	public void deleteGreetingNoUser() {
+		client.delete().uri("/api/greetings/1").accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
+				.isUnauthorized();
+
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	@DirtiesContext
+	public void deleteGreetingWithUser() {
+		client.mutate().filter(basicAuthentication("Rob", "Haines")).build().delete().uri("/api/greetings/1")
+				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNoContent();
+
+		assertThat(currentRows - 1, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	public void deleteGreetingNotFound() {
+		client.mutate().filter(basicAuthentication("Rob", "Haines")).build().delete().uri("/api/greetings/99")
+				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNotFound().expectHeader()
+				.contentType(MediaType.APPLICATION_JSON).expectBody().jsonPath("$.error")
+				.value(containsString("greeting 99")).jsonPath("$.id").isEqualTo("99");
+	}
+
+	@Test
+	public void deleteAllGreetingsNoUser() {
+		client.delete().uri("/api/greetings").accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
+				.isUnauthorized();
+
+		assertThat(currentRows, equalTo(countRowsInTable("greeting")));
+	}
+
+	@Test
+	@DirtiesContext
+	public void deleteAllGreetingsWithUser() {
+		client.mutate().filter(basicAuthentication("Rob", "Haines")).build().delete().uri("/api/greetings")
+				.accept(MediaType.APPLICATION_JSON).exchange().expectStatus().isNoContent();
+
+		assertThat(0, equalTo(countRowsInTable("greeting")));
+	}
 }
